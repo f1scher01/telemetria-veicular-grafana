@@ -39,3 +39,5 @@ grafana-storage/
 
 # Logs e outputs temporários
 *.log
+
+.vercel

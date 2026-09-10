@@ -1,0 +1,6 @@
+run_dashboard.py
+src/
+grafana/
+docker-compose.yml
+iniciar_telemetria.bat
+requirements.txt

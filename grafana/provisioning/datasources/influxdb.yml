@@ -8,9 +8,9 @@ datasources:
     isDefault: true
     jsonData:
       version: Flux
-      organization: maua_racing
+      organization: telemetria_org
       defaultBucket: telemetria
       tlsSkipVerify: true
     secureJsonData:
-      token: telemetria-super-secret-token-maua-2026
+      token: telemetria-super-secret-token-2026
     editable: false

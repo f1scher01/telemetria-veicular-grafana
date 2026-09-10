@@ -4,6 +4,7 @@
 ### Monitoramento Térmico, Dinâmica Veicular e Geolocalização GPS em Tempo Real
 **Engenharia Mecânica — Instituto Mauá de Tecnologia (IMT)**
 
+[![Demo Online ao Vivo](https://img.shields.io/badge/Demo%20Online-telemetria--veicular--grafana.vercel.app-success?style=for-the-badge&logo=vercel&logoColor=white)](https://telemetria-veicular-grafana.vercel.app)
 [![Execução Autônoma](https://img.shields.io/badge/Execu%C3%A7%C3%A3o-Sem%20Docker%20Necess%C3%A1rio-success?style=for-the-badge&logo=html5&logoColor=white)](#-como-executar-o-projeto)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-F7DF1E?style=for-the-badge&logo=python&logoColor=black)](https://www.python.org)
 [![Grafana](https://img.shields.io/badge/Grafana-10.4-orange?style=for-the-badge&logo=grafana&logoColor=white)](https://grafana.com)
@@ -14,6 +15,8 @@
 <br/>
 
 **Plataforma completa de aquisição, ingestão e visualização contínua de parâmetros termodinâmicos, cinemáticos e espaciais de veículos de competição.**
+
+👉 **[Acesse o Dashboard Interativo Online no Vercel](https://telemetria-veicular-grafana.vercel.app)**
 
 </div>
 
@@ -132,11 +135,19 @@ O pipeline gera relatórios gráficos de alta resolução para validação de ca
 
 ## 🚀 Como Executar o Projeto
 
-Você pode rodar o projeto de **duas formas**: imediatamente de forma **autônoma (sem Docker)** ou através da **stack industrial completa de contêineres**.
+Você pode interagir com o projeto de três formas: **direto na web (online)**, **localmente sem Docker** ou através da **stack industrial completa de contêineres**.
 
-### Método 1: Execução Imediata & Autônoma (Recomendado — Sem Docker)
+### 🌐 Método 1: Demonstração Online Imediata (Recomendado — Sem Instalar Nada)
 
-Não requer Docker, nem banco de dados externo ou configurações complexas. Funciona instantaneamente em qualquer máquina com Python:
+Para visualizar e interagir com o cockpit imediatamente de qualquer dispositivo ou navegador sem precisar instalar nada:
+
+👉 **[https://telemetria-veicular-grafana.vercel.app](https://telemetria-veicular-grafana.vercel.app)**
+
+---
+
+### Método 2: Execução Local Imediata & Autônoma (Sem Docker)
+
+Funciona instantaneamente em qualquer computador com Python:
 
 1. **No Windows:**
    Basta dar **dois cliques** no arquivo [`iniciar_telemetria.bat`](iniciar_telemetria.bat).
@@ -146,14 +157,16 @@ Não requer Docker, nem banco de dados externo ou configurações complexas. Fun
    python run_dashboard.py
    ```
 
-O servidor abrirá automaticamente o navegador na porta padrão:
-👉 **[http://localhost:3000](http://localhost:3000)**
+O servidor local iniciará e abrirá automaticamente o cockpit no navegador no endereço local:
+`http://localhost:3000`
 
-*(Opcional: Você também pode simplesmente abrir o arquivo [`index.html`](index.html) direto em qualquer navegador sem rodar nada)*.
+*(Opcional: Você também pode simplesmente abrir o arquivo [`index.html`](index.html) direto em qualquer navegador com duplo clique)*.
+
+> ℹ️ **Nota sobre links locais:** Endereços com `localhost` só respondem quando você tiver iniciado o servidor na sua própria máquina. Se você estiver navegando pelo GitHub sem executar os comandos, acesse a **[Demonstração Online](https://telemetria-veicular-grafana.vercel.app)**.
 
 ---
 
-### Método 2: Infraestrutura Industrial Completa (Docker + InfluxDB + Grafana)
+### Método 3: Infraestrutura Industrial Completa (Docker + InfluxDB + Grafana)
 
 Para ambientes de engenharia de pista que utilizam banco de séries temporais corporativo:
 
@@ -164,9 +177,9 @@ Para ambientes de engenharia de pista que utilizam banco de séries temporais co
 docker compose up -d
 ```
 
-O Grafana e o InfluxDB serão provisionados automaticamente:
-- **Grafana:** [http://localhost:3000](http://localhost:3000) *(Acesso anônimo ativado, ou login: `admin` / `admin`)*
-- **InfluxDB:** [http://localhost:8086](http://localhost:8086) *(Login: `admin` / `mauaracing2026`)*
+O Grafana e o InfluxDB serão provisionados automaticamente na sua máquina:
+- **Grafana Local:** `http://localhost:3000` *(Acesso anônimo ativado, ou login: `admin` / `admin`)*
+- **InfluxDB Local:** `http://localhost:8086` *(Login: `admin` / `telemetria2026`)*
 
 O dashboard **"🏎️ Telemetria Veicular & Séries Temporais"** estará carregado na pasta *Engenharia Automotiva*.
 

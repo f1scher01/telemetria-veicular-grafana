@@ -1,5 +1,5 @@
 @echo off
-title Telemetria Veicular - Formula Maua
+title Telemetria Veicular - Prototipo de Competicao
 echo ======================================================================
 echo    INICIANDO DASHBOARD DE TELEMETRIA VEICULAR (SEM NECESSIDADE DE DOCKER)
 echo ======================================================================

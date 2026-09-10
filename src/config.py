@@ -6,13 +6,13 @@ import os
 
 # Configurações do InfluxDB 2.x
 INFLUXDB_URL = os.getenv("INFLUXDB_URL", "http://localhost:8086")
-INFLUXDB_TOKEN = os.getenv("INFLUXDB_TOKEN", "telemetria-super-secret-token-maua-2026")
-INFLUXDB_ORG = os.getenv("INFLUXDB_ORG", "maua_racing")
+INFLUXDB_TOKEN = os.getenv("INFLUXDB_TOKEN", "telemetria-super-secret-token-2026")
+INFLUXDB_ORG = os.getenv("INFLUXDB_ORG", "telemetria_org")
 INFLUXDB_BUCKET = os.getenv("INFLUXDB_BUCKET", "telemetria")
 
 # Parâmetros de Simulação
 SAMPLING_RATE_HZ = int(os.getenv("SAMPLING_RATE_HZ", "10"))  # 10 amostras por segundo
-VEHICLE_ID = os.getenv("VEHICLE_ID", "Carro_01_Formula_Maua")
+VEHICLE_ID = os.getenv("VEHICLE_ID", "Prototipo_Competicao_01")
 CIRCUIT_NAME = "Autodromo_Jose_Carlos_Pace_Interlagos"
 
 # Coordenadas Base do Autódromo de Interlagos (São Paulo - SP)

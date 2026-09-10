@@ -518,7 +518,7 @@
   ],
   "refresh": "1s",
   "schemaVersion": 39,
-  "tags": ["telemetria", "automotivo", "engenharia-mecanica", "maua", "sensores"],
+  "tags": ["telemetria", "automotivo", "engenharia-mecanica", "competicao", "sensores"],
   "time": {
     "from": "now-5m",
     "to": "now"
@@ -528,6 +528,6 @@
   },
   "timezone": "America/Sao_Paulo",
   "title": "🏎️ Telemetria Veicular & Séries Temporais — Autódromo de Interlagos",
-  "uid": "telemetria-veicular-imt",
+  "uid": "telemetria-veicular-interlagos",
   "version": 1
 }

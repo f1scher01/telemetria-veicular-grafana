@@ -55,7 +55,7 @@ def generate_telemetry_figures(csv_path: str = "data/sample_lap_interlagos.csv")
                            wspace=0.32, hspace=0.44, left=0.06, right=0.96, top=0.88, bottom=0.06)
 
     fig.suptitle("SISTEMA DE TELEMETRIA VEICULAR — ANÁLISE DE VOLTA RÁPIDA (AUTÓDROMO DE INTERLAGOS)\n"
-                 "Aquisição a 10 Hz | Carro 01 Fórmula Mauá | Tempo de Volta: 1m40s2 | Velocidade Máx: 236.4 km/h",
+                 "Aquisição a 10 Hz | Protótipo Experimental 01 | Tempo de Volta: 1m40s2 | Velocidade Máx: 236.4 km/h",
                  fontsize=14, fontweight='bold', color='#60a5fa', y=0.965)
 
     # Subplot 1: Velocidade & Marcha
