@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telemetria Veicular & Séries Temporais — Fórmula Mauá (Interlagos)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #07090e;
+      --bg-card: #0f141e;
+      --bg-card-hover: #151c2a;
+      --border-color: #1e2638;
+      --border-accent: #2d3852;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-cyan: #06b6d4;
+      --accent-blue: #38bdf8;
+      --accent-green: #22c55e;
+      --accent-red: #ef4444;
+      --accent-purple: #a855f7;
+      --accent-amber: #f59e0b;
+      --accent-yellow: #facc15;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      padding: 16px 20px;
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .header-left h1 {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .header-left h1 span.badge {
+      font-size: 0.7rem;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-blue);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .header-left p {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+    .header-meta {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    .meta-box {
+      text-align: right;
+    }
+    .meta-box .label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .meta-box .val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
+    /* CONTROLS BAR */
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+    .btn {
+      background: #1e2638;
+      border: 1px solid var(--border-accent);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn:hover {
+      background: #2b364e;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+    }
+    .btn.active {
+      background: var(--accent-blue);
+      color: #07090e;
+      border-color: var(--accent-blue);
+      font-weight: 700;
+    }
+    .btn-group {
+      display: flex;
+      gap: 4px;
+      background: #0b0f17;
+      padding: 3px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    .btn-group .btn-sm {
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      border-radius: 6px;
+    }
+    .btn-group .btn-sm.active {
+      background: #1e2638;
+      color: #fff;
+      font-weight: 700;
+    }
+    .timeline-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 250px;
+    }
+    .timeline-container input[type=range] {
+      flex: 1;
+      accent-color: var(--accent-blue);
+      cursor: pointer;
+    }
+    .time-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent-yellow);
+      min-width: 80px;
+    }
+    .sector-badge {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: var(--accent-yellow);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    /* MAIN GRID */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.9fr 1.1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 1200px) {
+      .dashboard-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 800px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .card-title {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-title span.tag {
+      font-size: 0.65rem;
+      color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* GAUGE CLUSTER */
+    .gauge-cluster {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .shift-lights {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .shift-led {
+      width: 14px;
+      height: 10px;
+      border-radius: 2px;
+      background: #1e2638;
+      transition: background 0.1s ease, box-shadow 0.1s ease;
+    }
+    .shift-led.green.on { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
+    .shift-led.yellow.on { background: #eab308; box-shadow: 0 0 10px #eab308; }
+    .shift-led.red.on { background: #ef4444; box-shadow: 0 0 12px #ef4444; }
+    .shift-led.blue.on { background: #38bdf8; box-shadow: 0 0 14px #38bdf8; }
+
+    .dial-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 12px;
+    }
+    .speed-gear-box {
+      text-align: center;
+      background: #090d15;
+      border: 2px solid #1e2638;
+      border-radius: 12px;
+      padding: 12px 18px;
+      min-width: 140px;
+    }
+    .gear-display {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 3.2rem;
+      font-weight: 700;
+      color: var(--accent-amber);
+      line-height: 1;
+      text-shadow: 0 0 16px rgba(245, 158, 11, 0.5);
+    }
+    .gear-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .speed-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.1;
+      margin-top: 4px;
+    }
+    .speed-unit {
+      font-size: 0.75rem;
+      color: var(--accent-blue);
+      font-weight: 600;
+    }
+
+    .tachometer-box {
+      text-align: center;
+      position: relative;
+    }
+    .rpm-num {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent-purple);
+    }
+    .rpm-unit {
+      position: absolute;
+      top: 75%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+
+    /* PEDALS & ENGINE HEALTH */
+    .pedals-health-row {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .pedal-bar-wrapper {
+      margin-bottom: 8px;
+    }
+    .pedal-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      margin-bottom: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .bar-track {
+      height: 10px;
+      background: #090d15;
+      border: 1px solid #1e2638;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+    }
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      transition: width 0.08s linear;
+    }
+    .bar-fill.tps { background: linear-gradient(90deg, #16a34a, #22c55e); box-shadow: 0 0 8px #22c55e; }
+    .bar-fill.brake { background: linear-gradient(90deg, #dc2626, #ef4444); box-shadow: 0 0 8px #ef4444; }
+
+    .engine-metrics {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      background: #090d15;
+      border-radius: 6px;
+      border: 1px solid #1e2638;
+      font-size: 0.8rem;
+    }
+    .metric-row .m-label { color: var(--text-secondary); }
+    .metric-row .m-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* CIRCUIT MAP */
+    .map-card {
+      display: flex;
+      flex-direction: column;
+    }
+    #trackCanvas {
+      width: 100%;
+      height: 320px;
+      background: #090d15;
+      border-radius: 8px;
+      border: 1px solid #1e2638;
+    }
+
+    /* G-G DIAGRAM */
+    .gg-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #ggCanvas {
+      width: 260px;
+      height: 260px;
+      background: #090d15;
+      border-radius: 8px;
+      border: 1px solid #1e2638;
+    }
+    .gg-stats {
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      margin-top: 10px;
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .gg-stats span { color: var(--text-secondary); }
+    .gg-stats b { color: #fff; }
+
+    /* CHARTS FULL ROW */
+    .charts-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    #telemetryChart {
+      width: 100%;
+      height: 220px;
+      background: #090d15;
+      border-radius: 8px;
+      border: 1px solid #1e2638;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding: 10px;
+    }
+    footer a { color: var(--accent-blue); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <h1>
+        🏎️ SISTEMA DE TELEMETRIA VEICULAR
+        <span class="badge">10 Hz LIVE REPLAY</span>
+      </h1>
+      <p>Carro 01 Fórmula Mauá • Autódromo José Carlos Pace (Interlagos) • Aquisição e Séries Temporais</p>
+    </div>
+    <div class="header-meta">
+      <div class="meta-box">
+        <div class="label">Volta Atual</div>
+        <div class="val" id="lapDisplay">1 / 1</div>
+      </div>
+      <div class="meta-box">
+        <div class="label">Melhor Volta</div>
+        <div class="val">1:40.200</div>
+      </div>
+      <div class="meta-box">
+        <div class="label">Vel. Máxima</div>
+        <div class="val" id="topSpeedDisplay">236.4 km/h</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTROLS BAR -->
+  <div class="controls-bar">
+    <button class="btn" id="playBtn">▶ Iniciar Sessão</button>
+    <button class="btn" id="resetBtn">↺ Reiniciar</button>
+
+    <div class="btn-group">
+      <button class="btn-sm" data-speed="0.5">0.5x</button>
+      <button class="btn-sm active" data-speed="1.0">1.0x</button>
+      <button class="btn-sm" data-speed="2.0">2.0x</button>
+      <button class="btn-sm" data-speed="5.0">5.0x</button>
+    </div>
+
+    <div class="timeline-container">
+      <span class="time-display" id="timeCurrent">00:00.0</span>
+      <input type="range" id="timelineSlider" min="0" max="1599" value="0">
+      <span class="time-display" style="color:var(--text-muted)">01:40.2</span>
+    </div>
+
+    <div class="sector-badge" id="sectorBadge">📍 Reta dos Boxes</div>
+  </div>
+
+  <!-- DASHBOARD MAIN GRID -->
+  <div class="dashboard-grid">
+
+    <!-- CARD 1: COCKPIT & TREM DE FORÇA -->
+    <div class="card">
+      <div class="card-title">
+        Trem de Força & Cockpit
+        <span class="tag">CAN-BUS 10 Hz</span>
+      </div>
+
+      <div class="gauge-cluster">
+        <!-- Shift LEDs -->
+        <div class="shift-lights">
+          <div class="shift-led green" id="led1"></div>
+          <div class="shift-led green" id="led2"></div>
+          <div class="shift-led yellow" id="led3"></div>
+          <div class="shift-led yellow" id="led4"></div>
+          <div class="shift-led red" id="led5"></div>
+          <div class="shift-led red" id="led6"></div>
+          <div class="shift-led blue" id="led7"></div>
+          <div class="shift-led blue" id="led8"></div>
+        </div>
+
+        <!-- Dials Row -->
+        <div class="dial-row">
+          <!-- Tachometer Canvas -->
+          <div class="tachometer-box">
+            <canvas id="tachometerCanvas" width="180" height="150"></canvas>
+            <div class="rpm-num" id="rpmDisplay">0</div>
+            <div class="rpm-unit">RPM</div>
+          </div>
+
+          <!-- Gear & Speed Box -->
+          <div class="speed-gear-box">
+            <div class="gear-label">Marcha</div>
+            <div class="gear-display" id="gearDisplay">N</div>
+            <div class="speed-display" id="speedDisplay">0</div>
+            <div class="speed-unit">KM/H</div>
+          </div>
+        </div>
+
+        <!-- Pedals & Health -->
+        <div class="pedals-health-row">
+          <div>
+            <!-- TPS Bar -->
+            <div class="pedal-bar-wrapper">
+              <div class="pedal-header">
+                <span style="color:var(--accent-green)">TPS (Acel)</span>
+                <span id="tpsVal">0%</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill tps" id="tpsBar"></div>
+              </div>
+            </div>
+
+            <!-- Brake Bar -->
+            <div class="pedal-bar-wrapper">
+              <div class="pedal-header">
+                <span style="color:var(--accent-red)">Freio Hidr.</span>
+                <span id="brakeVal">0 bar</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill brake" id="brakeBar"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="engine-metrics">
+            <div class="metric-row">
+              <span class="m-label">Pressão Óleo</span>
+              <span class="m-val" id="oilPressVal" style="color:var(--accent-blue)">4.3 bar</span>
+            </div>
+            <div class="metric-row">
+              <span class="m-label">Temp. Óleo</span>
+              <span class="m-val" id="oilTempVal" style="color:var(--accent-amber)">92.0 °C</span>
+            </div>
+            <div class="metric-row">
+              <span class="m-label">Temp. Radiador</span>
+              <span class="m-val" id="coolantTempVal" style="color:var(--accent-cyan)">86.0 °C</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 2: MAPA GPS INTERLAGOS -->
+    <div class="card map-card">
+      <div class="card-title">
+        Georreferenciamento GPS — Interlagos
+        <span class="tag">WGS84 EPSG:4326</span>
+      </div>
+      <canvas id="trackCanvas"></canvas>
+    </div>
+
+    <!-- CARD 3: DIAGRAMA G-G -->
+    <div class="card gg-card">
+      <div class="card-title" style="width:100%">
+        Diagrama G-G (Aceleração Inercial)
+        <span class="tag">IMU 6-DOF</span>
+      </div>
+      <canvas id="ggCanvas" width="260" height="260"></canvas>
+      <div class="gg-stats">
+        <div><span>G Lat:</span> <b id="gLatVal">0.00 G</b></div>
+        <div><span>G Long:</span> <b id="gLongVal">0.00 G</b></div>
+        <div><span>G Total:</span> <b id="gTotalVal">0.00 G</b></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SYNCHRONIZED MULTI-TRACE CHARTS -->
+  <div class="charts-container">
+    <div class="card-title">
+      Traçados Históricos de Telemetria (Sincronização em Tempo Real)
+      <span class="tag">Velocidade • RPM • Freio/TPS • Cargas G</span>
+    </div>
+    <canvas id="telemetryChart"></canvas>
+  </div>
+
+  <footer>
+    Desenvolvido por <b>Lucas Fischer Paez</b> • Estudante de Engenharia Mecânica (IMT) • Projeto de Telemetria Veicular & Análise de Séries Temporais
+  </footer>
+
+  <!-- DADOS EMBUTIDOS (100% OFFLINE E INDEPENDENTE DE DOCKER) -->
+  <script src="telemetry_data.js"></script>
+  <script>
+    // ESTADO DA SESSÃO
+    let currentIndex = 0;
+    let isPlaying = false;
+    let playbackSpeed = 1.0;
+    let animationTimer = null;
+    const totalPoints = typeof TELEMETRY_DATA !== 'undefined' ? TELEMETRY_DATA.length : 0;
+
+    // DOM ELEMENTS
+    const playBtn = document.getElementById('playBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const timelineSlider = document.getElementById('timelineSlider');
+    const timeCurrent = document.getElementById('timeCurrent');
+    const sectorBadge = document.getElementById('sectorBadge');
+    const speedDisplay = document.getElementById('speedDisplay');
+    const gearDisplay = document.getElementById('gearDisplay');
+    const rpmDisplay = document.getElementById('rpmDisplay');
+    const tpsBar = document.getElementById('tpsBar');
+    const tpsVal = document.getElementById('tpsVal');
+    const brakeBar = document.getElementById('brakeBar');
+    const brakeVal = document.getElementById('brakeVal');
+    const oilPressVal = document.getElementById('oilPressVal');
+    const oilTempVal = document.getElementById('oilTempVal');
+    const coolantTempVal = document.getElementById('coolantTempVal');
+    const gLatVal = document.getElementById('gLatVal');
+    const gLongVal = document.getElementById('gLongVal');
+    const gTotalVal = document.getElementById('gTotalVal');
+
+    // CANVAS ELEMENTS
+    const tachCanvas = document.getElementById('tachometerCanvas');
+    const tachCtx = tachCanvas.getContext('2d');
+    const trackCanvas = document.getElementById('trackCanvas');
+    const trackCtx = trackCanvas.getContext('2d');
+    const ggCanvas = document.getElementById('ggCanvas');
+    const ggCtx = ggCanvas.getContext('2d');
+    const chartCanvas = document.getElementById('telemetryChart');
+    const chartCtx = chartCanvas.getContext('2d');
+
+    // MAP BOUNDS (INTERLAGOS)
+    let minLon = -46.7038, maxLon = -46.6958;
+    let minLat = -23.7075, maxLat = -23.7011;
+
+    if (totalPoints > 0) {
+      minLon = Math.min(...TELEMETRY_DATA.map(d => d.longitude));
+      maxLon = Math.max(...TELEMETRY_DATA.map(d => d.longitude));
+      minLat = Math.min(...TELEMETRY_DATA.map(d => d.latitude));
+      maxLat = Math.max(...TELEMETRY_DATA.map(d => d.latitude));
+    }
+
+    // REDIMENSIONA CANVAS PARA NATIVE RESOLUTION
+    function resizeCanvases() {
+      trackCanvas.width = trackCanvas.clientWidth * window.devicePixelRatio;
+      trackCanvas.height = trackCanvas.clientHeight * window.devicePixelRatio;
+      chartCanvas.width = chartCanvas.clientWidth * window.devicePixelRatio;
+      chartCanvas.height = chartCanvas.clientHeight * window.devicePixelRatio;
+      drawTrackMap();
+      drawTelemetryChart();
+    }
+    window.addEventListener('resize', resizeCanvases);
+
+    // FORMATAÇÃO DE TEMPO
+    function formatLapTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = (seconds % 60).toFixed(1);
+      return `${String(mins).padStart(2, '0')}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    // DESENHA TACÔMETRO
+    function drawTachometer(rpm) {
+      tachCtx.clearRect(0, 0, tachCanvas.width, tachCanvas.height);
+      const cx = 90, cy = 90, r = 70;
+      const startAngle = Math.PI * 0.75;
+      const endAngle = Math.PI * 2.25;
+
+      // Track Fundo
+      tachCtx.beginPath();
+      tachCtx.arc(cx, cy, r, startAngle, endAngle);
+      tachCtx.strokeStyle = '#1e2638';
+      tachCtx.lineWidth = 14;
+      tachCtx.lineCap = 'round';
+      tachCtx.stroke();
+
+      // Zona de Redline (8500-10000)
+      const redlineStart = startAngle + (endAngle - startAngle) * (8500 / 10000);
+      tachCtx.beginPath();
+      tachCtx.arc(cx, cy, r, redlineStart, endAngle);
+      tachCtx.strokeStyle = 'rgba(239, 68, 68, 0.4)';
+      tachCtx.lineWidth = 14;
+      tachCtx.stroke();
+
+      // Arco de RPM Atual
+      const currentAngle = startAngle + (endAngle - startAngle) * Math.min(1.0, (rpm / 10000));
+      tachCtx.beginPath();
+      tachCtx.arc(cx, cy, r, startAngle, currentAngle);
+      const grad = tachCtx.createLinearGradient(0, 0, 180, 0);
+      grad.addColorStop(0, '#38bdf8');
+      grad.addColorStop(0.7, '#a855f7');
+      grad.addColorStop(1, '#ef4444');
+      tachCtx.strokeStyle = grad;
+      tachCtx.lineWidth = 14;
+      tachCtx.lineCap = 'round';
+      tachCtx.stroke();
+    }
+
+    // ATUALIZA SHIFT LEDS
+    function updateShiftLeds(rpm) {
+      const leds = [
+        { el: document.getElementById('led1'), threshold: 6500 },
+        { el: document.getElementById('led2'), threshold: 7000 },
+        { el: document.getElementById('led3'), threshold: 7500 },
+        { el: document.getElementById('led4'), threshold: 8000 },
+        { el: document.getElementById('led5'), threshold: 8500 },
+        { el: document.getElementById('led6'), threshold: 8800 },
+        { el: document.getElementById('led7'), threshold: 9100 },
+        { el: document.getElementById('led8'), threshold: 9300 }
+      ];
+      leds.forEach(item => {
+        if (rpm >= item.threshold) {
+          item.el.classList.add('on');
+        } else {
+          item.el.classList.remove('on');
+        }
+      });
+    }
+
+    // DESENHA MAPA DA PISTA
+    function drawTrackMap() {
+      if (!totalPoints) return;
+      const w = trackCanvas.width;
+      const h = trackCanvas.height;
+      trackCtx.clearRect(0, 0, w, h);
+
+      const pad = 40;
+      function mapCoord(lon, lat) {
+        const x = pad + ((lon - minLon) / (maxLon - minLon)) * (w - 2 * pad);
+        const y = h - (pad + ((lat - minLat) / (maxLat - minLat)) * (h - 2 * pad));
+        return { x, y };
+      }
+
+      // Traçado
+      trackCtx.beginPath();
+      const p0 = mapCoord(TELEMETRY_DATA[0].longitude, TELEMETRY_DATA[0].latitude);
+      trackCtx.moveTo(p0.x, p0.y);
+      for (let i = 1; i < totalPoints; i++) {
+        const p = mapCoord(TELEMETRY_DATA[i].longitude, TELEMETRY_DATA[i].latitude);
+        trackCtx.lineTo(p.x, p.y);
+      }
+      trackCtx.closePath();
+      trackCtx.strokeStyle = '#1e293b';
+      trackCtx.lineWidth = 12;
+      trackCtx.stroke();
+
+      // Traçado Colorido por Velocidade
+      for (let i = 1; i < totalPoints; i += 2) {
+        const pA = mapCoord(TELEMETRY_DATA[i - 1].longitude, TELEMETRY_DATA[i - 1].latitude);
+        const pB = mapCoord(TELEMETRY_DATA[i].longitude, TELEMETRY_DATA[i].latitude);
+        const spd = TELEMETRY_DATA[i].speed_kmh;
+        const normSpd = Math.min(1.0, (spd - 70) / (236 - 70));
+
+        trackCtx.beginPath();
+        trackCtx.moveTo(pA.x, pA.y);
+        trackCtx.lineTo(pB.x, pB.y);
+        trackCtx.strokeStyle = `hsl(${220 - normSpd * 180}, 90%, 55%)`;
+        trackCtx.lineWidth = 4;
+        trackCtx.stroke();
+      }
+
+      // Ponto do Carro Atual
+      const current = TELEMETRY_DATA[currentIndex];
+      const carPos = mapCoord(current.longitude, current.latitude);
+
+      // Halo
+      trackCtx.beginPath();
+      trackCtx.arc(carPos.x, carPos.y, 12, 0, Math.PI * 2);
+      trackCtx.fillStyle = 'rgba(56, 189, 248, 0.3)';
+      trackCtx.fill();
+
+      // Núcleo
+      trackCtx.beginPath();
+      trackCtx.arc(carPos.x, carPos.y, 6, 0, Math.PI * 2);
+      trackCtx.fillStyle = '#38bdf8';
+      trackCtx.shadowColor = '#38bdf8';
+      trackCtx.shadowBlur = 12;
+      trackCtx.fill();
+      trackCtx.shadowBlur = 0;
+    }
+
+    // DESENHA DIAGRAMA G-G
+    function drawGGDiagram(gLat, gLong) {
+      const w = ggCanvas.width, h = ggCanvas.height;
+      ggCtx.clearRect(0, 0, w, h);
+      const cx = w / 2, cy = h / 2;
+      const scale = (w / 2 - 20) / 2.2; // até 2.2 G
+
+      // Círculos de limite
+      [0.5, 1.0, 1.5, 2.0].forEach(g => {
+        ggCtx.beginPath();
+        ggCtx.arc(cx, cy, g * scale, 0, Math.PI * 2);
+        ggCtx.strokeStyle = '#1e2638';
+        ggCtx.lineWidth = 1;
+        ggCtx.stroke();
+        ggCtx.fillStyle = '#64748b';
+        ggCtx.font = '10px JetBrains Mono';
+        ggCtx.fillText(`${g}G`, cx + g * scale - 18, cy - 4);
+      });
+
+      // Eixos
+      ggCtx.beginPath();
+      ggCtx.moveTo(20, cy); ggCtx.lineTo(w - 20, cy);
+      ggCtx.moveTo(cx, 20); ggCtx.lineTo(cx, h - 20);
+      ggCtx.strokeStyle = '#2d3852';
+      ggCtx.stroke();
+
+      // Histórico recente (trilha de 15 pontos)
+      const startIdx = Math.max(0, currentIndex - 15);
+      for (let i = startIdx; i <= currentIndex; i++) {
+        const pt = TELEMETRY_DATA[i];
+        const px = cx + pt.g_lat * scale;
+        const py = cy - pt.g_long * scale;
+        const alpha = (i - startIdx + 1) / (currentIndex - startIdx + 1);
+        ggCtx.beginPath();
+        ggCtx.arc(px, py, 3, 0, Math.PI * 2);
+        ggCtx.fillStyle = `rgba(236, 72, 153, ${alpha * 0.7})`;
+        ggCtx.fill();
+      }
+
+      // Ponto Atual
+      const currX = cx + gLat * scale;
+      const currY = cy - gLong * scale;
+
+      ggCtx.beginPath();
+      ggCtx.arc(currX, currY, 10, 0, Math.PI * 2);
+      ggCtx.fillStyle = 'rgba(6, 182, 212, 0.4)';
+      ggCtx.fill();
+
+      ggCtx.beginPath();
+      ggCtx.arc(currX, currY, 5, 0, Math.PI * 2);
+      ggCtx.fillStyle = '#06b6d4';
+      ggCtx.shadowColor = '#06b6d4';
+      ggCtx.shadowBlur = 10;
+      ggCtx.fill();
+      ggCtx.shadowBlur = 0;
+    }
+
+    // DESENHA TRAÇADO HISTÓRICO
+    function drawTelemetryChart() {
+      if (!totalPoints) return;
+      const w = chartCanvas.width;
+      const h = chartCanvas.height;
+      chartCtx.clearRect(0, 0, w, h);
+
+      // Eixo e Grid
+      chartCtx.strokeStyle = '#1e2638';
+      chartCtx.lineWidth = 1;
+      for (let i = 1; i <= 4; i++) {
+        const y = (h / 5) * i;
+        chartCtx.beginPath();
+        chartCtx.moveTo(0, y); chartCtx.lineTo(w, y);
+        chartCtx.stroke();
+      }
+
+      // Curva de Velocidade
+      chartCtx.beginPath();
+      for (let i = 0; i < totalPoints; i++) {
+        const x = (i / totalPoints) * w;
+        const y = h - (TELEMETRY_DATA[i].speed_kmh / 250) * (h - 20) - 10;
+        if (i === 0) chartCtx.moveTo(x, y);
+        else chartCtx.lineTo(x, y);
+      }
+      chartCtx.strokeStyle = '#38bdf8';
+      chartCtx.lineWidth = 1.8;
+      chartCtx.stroke();
+
+      // Curva de RPM
+      chartCtx.beginPath();
+      for (let i = 0; i < totalPoints; i++) {
+        const x = (i / totalPoints) * w;
+        const y = h - ((TELEMETRY_DATA[i].rpm - 4000) / 6000) * (h - 20) - 10;
+        if (i === 0) chartCtx.moveTo(x, y);
+        else chartCtx.lineTo(x, y);
+      }
+      chartCtx.strokeStyle = '#a855f7';
+      chartCtx.lineWidth = 1.2;
+      chartCtx.stroke();
+
+      // Cursor de Posição Atual
+      const cursorX = (currentIndex / totalPoints) * w;
+      chartCtx.beginPath();
+      chartCtx.moveTo(cursorX, 0);
+      chartCtx.lineTo(cursorX, h);
+      chartCtx.strokeStyle = '#facc15';
+      chartCtx.lineWidth = 2;
+      chartCtx.stroke();
+    }
+
+    // ATUALIZAÇÃO DO SNAPSHOT
+    function updateTelemetry(index) {
+      if (!totalPoints) return;
+      currentIndex = Math.max(0, Math.min(index, totalPoints - 1));
+      const d = TELEMETRY_DATA[currentIndex];
+
+      // Valores numéricos
+      speedDisplay.textContent = Math.round(d.speed_kmh);
+      gearDisplay.textContent = d.gear === 0 ? 'N' : d.gear;
+      rpmDisplay.textContent = Math.round(d.rpm);
+      tpsBar.style.width = `${Math.min(100, Math.max(0, d.tps_percent))}%`;
+      tpsVal.textContent = `${Math.round(d.tps_percent)}%`;
+      brakeBar.style.width = `${Math.min(100, (d.brake_bar / 70) * 100)}%`;
+      brakeVal.textContent = `${d.brake_bar.toFixed(1)} bar`;
+
+      oilPressVal.textContent = `${d.oil_pressure_bar.toFixed(2)} bar`;
+      oilTempVal.textContent = `${d.oil_temp_c.toFixed(1)} °C`;
+      coolantTempVal.textContent = `${d.coolant_temp_c.toFixed(1)} °C`;
+
+      gLatVal.textContent = `${d.g_lat.toFixed(2)} G`;
+      gLongVal.textContent = `${d.g_long.toFixed(2)} G`;
+      const gTotal = Math.sqrt(d.g_lat * d.g_lat + d.g_long * d.g_long);
+      gTotalVal.textContent = `${gTotal.toFixed(2)} G`;
+
+      timeCurrent.textContent = formatLapTime(d.lap_time_s);
+      timelineSlider.value = currentIndex;
+      sectorBadge.textContent = `📍 ${d.sector.replace(/_/g, ' ')}`;
+
+      // Dials & Canvas
+      drawTachometer(d.rpm);
+      updateShiftLeds(d.rpm);
+      drawTrackMap();
+      drawGGDiagram(d.g_lat, d.g_long);
+      drawTelemetryChart();
+    }
+
+    // LOOP DE ANIMAÇÃO
+    function stepAnimation() {
+      if (!isPlaying) return;
+      currentIndex++;
+      if (currentIndex >= totalPoints) {
+        currentIndex = 0; // Loop contínuo
+      }
+      updateTelemetry(currentIndex);
+      animationTimer = setTimeout(stepAnimation, 100 / playbackSpeed);
+    }
+
+    // EVENTOS DOS BOTÕES
+    playBtn.addEventListener('click', () => {
+      isPlaying = !isPlaying;
+      if (isPlaying) {
+        playBtn.textContent = '⏸ Pausar';
+        playBtn.classList.add('active');
+        stepAnimation();
+      } else {
+        playBtn.textContent = '▶ Continuar';
+        playBtn.classList.remove('active');
+        clearTimeout(animationTimer);
+      }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      isPlaying = false;
+      clearTimeout(animationTimer);
+      playBtn.textContent = '▶ Iniciar Sessão';
+      playBtn.classList.remove('active');
+      updateTelemetry(0);
+    });
+
+    timelineSlider.addEventListener('input', (e) => {
+      updateTelemetry(parseInt(e.target.value));
+    });
+
+    document.querySelectorAll('.btn-sm').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.btn-sm').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        playbackSpeed = parseFloat(btn.dataset.speed);
+      });
+    });
+
+    // INICIALIZAÇÃO
+    window.addEventListener('DOMContentLoaded', () => {
+      resizeCanvases();
+      updateTelemetry(0);
+    });
+  </script>
+</body>
+</html>

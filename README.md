@@ -4,9 +4,10 @@
 ### Monitoramento Térmico, Dinâmica Veicular e Geolocalização GPS em Tempo Real
 **Engenharia Mecânica — Instituto Mauá de Tecnologia (IMT)**
 
+[![Execução Autônoma](https://img.shields.io/badge/Execu%C3%A7%C3%A3o-Sem%20Docker%20Necess%C3%A1rio-success?style=for-the-badge&logo=html5&logoColor=white)](#-como-executar-o-projeto)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-F7DF1E?style=for-the-badge&logo=python&logoColor=black)](https://www.python.org)
 [![Grafana](https://img.shields.io/badge/Grafana-10.4-orange?style=for-the-badge&logo=grafana&logoColor=white)](https://grafana.com)
 [![InfluxDB](https://img.shields.io/badge/InfluxDB-2.7-blue?style=for-the-badge&logo=influxdb&logoColor=white)](https://www.influxdata.com)
-[![Python](https://img.shields.io/badge/Python-3.10%2B-F7DF1E?style=for-the-badge&logo=python&logoColor=black)](https://www.python.org)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-3ddc84?style=for-the-badge)](LICENSE)
 
@@ -15,6 +16,16 @@
 **Plataforma completa de aquisição, ingestão e visualização contínua de parâmetros termodinâmicos, cinemáticos e espaciais de veículos de competição.**
 
 </div>
+
+---
+
+## 📸 Demonstração do Cockpit & Painel Interativo
+
+O projeto conta com um **dashboard analítico completo de cockpit** com reprodução contínua a 10 Hz, tacômetro analógico com *shift lights*, traçado GPS oficial do Autódromo de Interlagos, diagrama G-G de forças inerciais e séries temporais sincronizadas:
+
+![Cockpit Interativo de Telemetria Veicular](dashboard_interativo_live.png)
+
+**Figura 1:** Cockpit Interativo de Telemetria — Tacômetro com escala até 10.000 RPM e shift lights escalonados, indicador digital de marcha e velocidade, barras dinâmicas de TPS e freio hidráulico, monitor térmico do motor, mapa GPS de Interlagos com localização em tempo real e diagrama G-G de aceleração triaxial.
 
 ---
 
@@ -30,54 +41,76 @@ O sistema captura variáveis críticas do trem de força (pressão e temperatura
 
 ```mermaid
 flowchart TD
-    subgraph Aquisição ["🏎️ Camada Veicular & Sensores"]
-        A1[Transdutor de Pressão de Óleo 0-10 bar]
-        A2[Sensores de Temperatura de Óleo e Água]
-        A3[Tacômetro / Sensor de Fase & Rotação]
-        A4[Módulo GNSS / GPS 10Hz]
-        A5[Simulador Físico / Logger CAN]
+    subgraph Aquisicao ["🏎️ Camada Veicular & Sensores"]
+        direction TB
+        H1["Sensores Automotivos & CAN-Bus"]
+        A1["Transdutor de Pressão de Óleo 0-10 bar"]
+        A2["Sensores NTC de Temperatura de Óleo e Água"]
+        A3["Tacômetro / Sensor de Fase & Rotação"]
+        A4["Módulo GNSS / GPS 10Hz"]
+        H1 --> A1 & A2 & A3 & A4
     end
 
-    subgraph Ingestão ["⚡ Pipeline de Ingestão Python"]
-        B1[src/simulator.py - Cinemática & Termodinâmica]
-        B2[src/ingestor.py - Buffer & Line Protocol]
+    subgraph Ingestao ["⚡ Pipeline de Modelagem & Ingestão"]
+        direction TB
+        H2["Motor Físico Python"]
+        B1["src/simulator.py — Cinemática & Termodinâmica"]
+        B2["src/ingestor.py — Buffer & Line Protocol"]
+        H2 --> B1 --> B2
     end
 
-    subgraph Armazenamento ["🗄️ Time-Series Database"]
-        C1[(InfluxDB 2.7\nBucket: telemetria)]
+    A1 & A2 & A3 & A4 --> H2
+
+    B2 --> INTERFACE["🖥️ Seleção de Modo de Visualização"]
+
+    subgraph VisualizacaoAutonoma ["🌐 Modo 1: Dashboard Autônomo (Sem Docker)"]
+        direction TB
+        V1["run_dashboard.py / index.html (Porta 3000)"]
+        V2["Gauges, Tacômetro LED, GPS Interlagos & Séries Temporais"]
+        V1 --> V2
     end
 
-    subgraph Visualização ["📊 Grafana Dashboard"]
-        D1[Gauges de Pressão & Temperatura de Óleo]
-        D2[Séries Temporais: RPM vs Pressão]
-        D3[Dinâmica de Aceleração e Forças G]
-        D4[Geomap: Traçado GPS em Interlagos]
+    subgraph VisualizacaoIndustrial ["🗄️ Modo 2: Stack Industrial (Docker + InfluxDB + Grafana)"]
+        direction TB
+        I1["InfluxDB 2.7 (Time-Series DB)"]
+        I2["Grafana 10.4 (Painel de Engenharia)"]
+        I1 --> I2
     end
 
-    A1 & A2 & A3 & A4 --> A5
-    A5 --> B1 --> B2
-    B2 -->|HTTP / Line Protocol| C1
-    C1 -->|Flux Query Engine| D1 & D2 & D3 & D4
+    INTERFACE --> V1
+    INTERFACE --> I1
 ```
 
 ---
 
-## 🌟 Funcionalidades e Painéis no Grafana
+## 📊 Análise Técnica e Diagnóstico de Pista (300 DPI)
+
+O pipeline gera relatórios gráficos de alta resolução para validação de calibração de sensores e análise de pilotagem:
+
+![Painel de Engenharia Automotiva](telemetria_dashboard_preview.png)
+
+**Figura 2:** Composição analítica de telemetria veicular na volta rápida de Interlagos (1m40s2) — Séries temporais de velocidade escalonar, regime de giro do motor com limiares de shift, sobreposição piloto TPS/freio, dinâmica inercial lateral/longitudinal, georreferenciamento de setores, envelope de atrito (Diagrama G-G), curva de lubrificação de óleo mecânica e balanço térmico do radiador.
+
+---
+
+## 🌟 Funcionalidades e Painéis de Monitoramento
 
 ### 1. 🛢️ Monitoramento Termodinâmico do Motor
-- **Pressão de Óleo ($P_{oleo}$):** Gauge com indicação instantânea e faixas operacionais críticas (alerta vermelho para quedas de pressão $< 1,5\text{ bar}$ em curvas de alta e $5,8\text{ bar}$ na reta).
-- **Temperatura de Óleo ($T_{oleo}$):** Acompanhamento contínuo da curva térmica com limiares de aquecimento ($80^\circ\text{C}$ a $110^\circ\text{C}$ nominal; alerta em $125^\circ\text{C}$).
-- **Fluido de Arrefecimento ($T_{agua}$):** Monitoramento da estabilidade do circuito do radiador e válvula termostática ($82^\circ\text{C}$ a $95^\circ\text{C}$).
-- **Correlação Cruzada:** Gráfico de séries temporais demonstrando a relação direta entre o aumento de RPM e a resposta da bomba de óleo mecânica, além da queda de viscosidade em temperaturas elevadas.
+- **Pressão de Óleo ($P_{óleo}$):** Indicação instantânea com faixas operacionais críticas (alerta para quedas de pressão $< 2,5\text{ bar}$ em curvas de alta e $> 5,2\text{ bar}$ na reta).
+- **Temperatura de Óleo ($T_{óleo}$):** Acompanhamento contínuo da curva térmica com limiares de aquecimento ($80^\circ\text{C}$ a $100^\circ\text{C}$ nominal; alerta em $105^\circ\text{C}$).
+- **Fluido de Arrefecimento ($T_{água}$):** Monitoramento da estabilidade do circuito do radiador e válvula termostática ($82^\circ\text{C}$ a $95^\circ\text{C}$).
+- **Curva de Lubrificação:** Gráfico de correlação direta entre o aumento de RPM e a resposta linear da bomba de óleo mecânica acionada pelo virabrequim.
 
 ### 2. 🏎️ Dinâmica Veicular e Comandos de Controle
-- **Tacômetro & Velocímetro:** Tacômetro com escala de 0 a 13.000 RPM e indicador digital de marcha engatada ($1^\text{a}$ a $6^\text{a}$).
-- **Forças G (Acelerações):** Gráfico temporal de força G lateral (picos de até $1,8\text{G}$ em curvas rápidas como o Curva do Lago e Mergulho) e longitudinal (até $-2,0\text{G}$ nas zonas de frenagem do S do Senna e Reta Oposta).
+- **Tacômetro & Velocímetro:** Tacômetro com escala até 10.000 RPM, redline em 9.200 RPM, 8 shift lights dinâmicos e display de marcha engatada ($1^\text{a}$ a $6^\text{a}$).
+- **Forças G (Envelope Operacional):** Gráfico temporal de força G lateral (picos de até $1,8\text{G}$ em curvas rápidas como o Curva do Lago e Ferradura) e longitudinal (até $-2,0\text{G}$ nas frenagens fortes do S do Senna e Junção).
+- **Diagrama G-G:** Visualização 2D do círculo de atrito de Milliken/Michelin com histórico recente para avaliar utilização de aderência dos pneus.
 - **Inputs do Piloto:** Abertura da borboleta de aceleração ($\text{TPS}\%$) e pressão da linha hidráulica de freio ($\text{bar}$).
 
 ### 3. 🗺️ Telemetria Geoespacial (Autódromo de Interlagos)
-- **Geomap Integrado:** Plotagem dos pontos de latitude, longitude e altitude ao longo dos 4.309 metros do Autódromo José Carlos Pace (Interlagos).
-- **Camada de Calor por Velocidade:** Coordenadas coloridas dinamicamente de acordo com a velocidade do carro, permitindo identificar pontos de freada, ápices de curva e velocidades de ponta.
+- **Geomap Integrado:** Traçado dos 4.309 metros do Autódromo José Carlos Pace (Interlagos) a partir de coordenadas GNSS/GPS reais.
+- **Marcador Móvel:** Posição do veículo sincronizada milissegundo a milissegundo com os instrumentos do cockpit.
+- **Identificação de Setores:** Rotação e telemetria mapeadas por setor oficial (Reta dos Boxes, S do Senna, Reta Oposta, Curva do Lago, Ferradura, Laranjinha, Pinheirinho, Bico de Pato, Mergulho e Junção).
 
 ---
 
@@ -96,54 +129,67 @@ flowchart TD
 
 ## 🚀 Como Executar o Projeto
 
-### Pré-requisitos
-- [Docker](https://www.docker.com/) e [Docker Compose](https://docs.docker.com/compose/) instalados
-- [Python 3.10+](https://www.python.org/)
+Você pode rodar o projeto de **duas formas**: imediatamente de forma **autônoma (sem Docker)** ou através da **stack industrial completa de contêineres**.
+
+### Método 1: Execução Imediata & Autônoma (Recomendado — Sem Docker)
+
+Não requer Docker, nem banco de dados externo ou configurações complexas. Funciona instantaneamente em qualquer máquina com Python:
+
+1. **No Windows:**
+   Basta dar **dois cliques** no arquivo [`iniciar_telemetria.bat`](iniciar_telemetria.bat).
+
+2. **Ou via terminal:**
+   ```bash
+   python run_dashboard.py
+   ```
+
+O servidor abrirá automaticamente o navegador na porta padrão:
+👉 **[http://localhost:3000](http://localhost:3000)**
+
+*(Opcional: Você também pode simplesmente abrir o arquivo [`index.html`](index.html) direto em qualquer navegador sem rodar nada)*.
 
 ---
 
-### Passo 1: Subir a Infraestrutura (Grafana + InfluxDB)
-Execute na raiz do projeto:
+### Método 2: Infraestrutura Industrial Completa (Docker + InfluxDB + Grafana)
 
+Para ambientes de engenharia de pista que utilizam banco de séries temporais corporativo:
+
+> **Pré-requisito:** Ter o [Docker Desktop](https://www.docker.com/) instalado e em execução no computador.
+
+#### 1. Subir os Contêineres
 ```bash
 docker compose up -d
 ```
 
-O Grafana e o InfluxDB serão iniciados e auto-provisionados:
+O Grafana e o InfluxDB serão provisionados automaticamente:
 - **Grafana:** [http://localhost:3000](http://localhost:3000) *(Acesso anônimo ativado, ou login: `admin` / `admin`)*
 - **InfluxDB:** [http://localhost:8086](http://localhost:8086) *(Login: `admin` / `mauaracing2026`)*
 
-O dashboard **"🏎️ Telemetria Veicular & Séries Temporais"** estará carregado automaticamente na pasta *Engenharia Automotiva*.
+O dashboard **"🏎️ Telemetria Veicular & Séries Temporais"** estará carregado na pasta *Engenharia Automotiva*.
 
----
-
-### Passo 2: Instalar as Dependências do Python
+#### 2. Transmitir Telemetria para o InfluxDB
 ```bash
-pip install -r requirements.txt
-```
-
----
-
-### Passo 3: Iniciar a Telemetria
-
-#### Opção A: Carga Inicial de Histórico (Popular o Dashboard Imediatamente)
-Gera dados das últimas voltas e popula os gráficos do Grafana para análise retrospectiva:
-```bash
-python -m src.ingestor --mode backfill --points 1500
-```
-
-#### Opção B: Streaming em Tempo Real (Live Pista a 10 Hz)
-Inicia a telemetria ao vivo com transmissão contínua ponto a ponto para o Grafana:
-```bash
+# Streaming contínuo ponto a ponto (10 Hz)
 python -m src.ingestor --mode stream
+
+# Ou carga imediata de voltas gravadas (backfill)
+python -m src.ingestor --mode backfill --points 1600
 ```
 
-#### Opção C: Exportar Sessão para CSV
-Gera arquivo de log para análise offline ou relatórios:
+---
+
+### Módulos Complementares
+
+#### Gerar Novo Gráfico Analítico em 300 DPI
+```bash
+python src/generate_preview.py
+```
+
+#### Exportar Sessão de Volta Rápida para CSV
 ```bash
 python -m src.export_csv
 ```
-O arquivo será salvo em `data/sample_lap_interlagos.csv`.
+Arquivo salvo em: `data/sample_lap_interlagos.csv` (1.600 pontos a 10 Hz).
 
 ---
 
@@ -154,6 +200,12 @@ telemetria-veicular-grafana/
 ├── .gitignore
 ├── LICENSE                                # Licença MIT
 ├── README.md                              # Documentação técnica executiva
+├── iniciar_telemetria.bat                 # Inicializador rápido de 1 clique para Windows
+├── run_dashboard.py                       # Servidor local autônomo (Porta 3000, zero Docker)
+├── index.html                             # Dashboard web interativo do cockpit de telemetria
+├── telemetry_data.js                      # Dataset de telemetria de 1.600 pontos embutido
+├── dashboard_interativo_live.png          # Captura do cockpit web em funcionamento
+├── telemetria_dashboard_preview.png       # Painel analítico de engenharia (300 DPI)
 ├── requirements.txt                       # Dependências Python
 ├── docker-compose.yml                     # InfluxDB 2.7 + Grafana 10.4
 ├── grafana/
@@ -163,15 +215,16 @@ telemetria-veicular-grafana/
 │   │   └── dashboards/
 │   │       └── dashboards.yml            # Auto-loader do dashboard
 │   └── dashboards/
-│       └── telemetria_veicular.json      # JSON completo do dashboard
+│       └── telemetria_veicular.json      # JSON completo do dashboard Grafana
 ├── src/
 │   ├── __init__.py
-│   ├── config.py                         # Configurações de conexão e circuito
-│   ├── simulator.py                      # Modelo cinemático, térmico e GPS
-│   ├── ingestor.py                       # Conexão e streaming com InfluxDB
+│   ├── config.py                         # Parâmetros de pista e limites de sensores
+│   ├── simulator.py                      # Modelo cinemático, termodinâmico e GPS
+│   ├── ingestor.py                       # Conexão e streaming com InfluxDB Line Protocol
+│   ├── generate_preview.py               # Gerador de gráficos científicos em 300 DPI
 │   └── export_csv.py                     # Exportador de telemetria para CSV
 └── data/
-    └── sample_lap_interlagos.csv         # 1.600 amostras reais de volta rápida
+    └── sample_lap_interlagos.csv         # 1.600 amostras a 10 Hz no Autódromo de Interlagos
 ```
 
 ---
@@ -180,4 +233,5 @@ telemetria-veicular-grafana/
 
 Desenvolvido por **Lucas Fischer Paez**  
 Aluno de Engenharia Mecânica — *Instituto Mauá de Tecnologia (IMT)*  
-GitHub: [@f1scher01](https://github.com/f1scher01)
+GitHub: [@f1scher01](https://github.com/f1scher01)  
+LinkedIn: [linkedin.com/in/lucasfischerpaez](https://www.linkedin.com/in/lucasfischerpaez)
