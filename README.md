@@ -146,7 +146,7 @@ O dashboard oficial está publicado e ativo no Grafana Cloud, permitindo visuali
 
 ### Método 2: Stack Local Completa com Docker
 
-> ⚠️ **Importante sobre os links locais:** Os endereços `http://localhost:3000` (Grafana) e `http://localhost:8086` (InfluxDB) referem-se à sua máquina local (`127.0.0.1`). Eles **só respondem no navegador após os contêineres serem iniciados** com o comando abaixo. Caso o Docker não esteja em execução, utilize a **[Versão no Grafana Cloud](https://fischerpaez.grafana.net/public-dashboards/5ea12a828dd1478eb54041c8624531d0)**.
+> ℹ️ **Execução Local vs Nuvem:** Os links `localhost:3000` (Grafana) e `localhost:8086` (InfluxDB) funcionam no computador de quem executar os contêineres via Docker. Para visualizar o dashboard online direto pelo navegador sem rodar nada no computador, utilize a **[Versão no Grafana Cloud](https://fischerpaez.grafana.net/public-dashboards/5ea12a828dd1478eb54041c8624531d0)**.
 
 #### 1. Pré-requisito
 Ter o [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado e em execução no computador.
