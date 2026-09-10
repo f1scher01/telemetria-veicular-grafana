@@ -1,491 +1,851 @@
 {
-  "annotations": {
-    "list": [
-      {
-        "builtIn": 1,
-        "datasource": {
-          "type": "grafana",
-          "uid": "-- Grafana --"
-        },
-        "enable": true,
-        "hide": true,
-        "name": "Annotations & Alerts",
-        "type": "dashboard"
-      }
-    ]
-  },
+  "id": null,
+  "uid": "firsczl",
+  "title": "🏎️ Telemetria Veicular & Monitoramento do Motor — Interlagos",
+  "description": "Cockpit analítico de telemetria automotiva, termodinâmica do motor e dinâmica veicular em tempo real.",
+  "tags": [
+    "telemetria",
+    "automotivo",
+    "engenharia-mecanica",
+    "interlagos",
+    "sensores"
+  ],
+  "timezone": "America/Sao_Paulo",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": null,
-  "links": [],
   "liveNow": true,
   "panels": [
     {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
-      "id": 100,
-      "title": "🏁 Visão Geral da Sessão & Telemetria em Tempo Real",
-      "type": "row"
-    },
-    {
-      "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "mappings": [],
-          "max": 7,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "red", "value": null },
-              { "color": "yellow", "value": 1.5 },
-              { "color": "green", "value": 2.5 },
-              { "color": "yellow", "value": 5.8 },
-              { "color": "red", "value": 6.5 }
-            ]
-          },
-          "unit": "bar"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 7, "w": 4, "x": 0, "y": 1 },
-      "id": 1,
-      "options": {
-        "minVizHeight": 75,
-        "minVizWidth": 75,
-        "orientation": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "pluginVersion": "10.4.0",
-      "targets": [
-        {
-          "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"motor\" and r._field == \"pressao_oleo_bar\")\n  |> last()",
-          "refId": "A"
-        }
-      ],
-      "title": "🛢️ Pressão de Óleo",
-      "type": "gauge"
-    },
-    {
-      "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "mappings": [],
-          "max": 140,
-          "min": 50,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "blue", "value": null },
-              { "color": "green", "value": 80 },
-              { "color": "yellow", "value": 110 },
-              { "color": "red", "value": 125 }
-            ]
-          },
-          "unit": "celsius"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 7, "w": 4, "x": 4, "y": 1 },
-      "id": 2,
-      "options": {
-        "minVizHeight": 75,
-        "minVizWidth": 75,
-        "orientation": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "pluginVersion": "10.4.0",
-      "targets": [
-        {
-          "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"motor\" and r._field == \"temp_oleo_c\")\n  |> last()",
-          "refId": "A"
-        }
-      ],
-      "title": "🌡️ Temp. Óleo",
-      "type": "gauge"
-    },
-    {
-      "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "mappings": [],
-          "max": 120,
-          "min": 40,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "blue", "value": null },
-              { "color": "green", "value": 75 },
-              { "color": "yellow", "value": 98 },
-              { "color": "red", "value": 105 }
-            ]
-          },
-          "unit": "celsius"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 7, "w": 4, "x": 8, "y": 1 },
-      "id": 3,
-      "options": {
-        "minVizHeight": 75,
-        "minVizWidth": 75,
-        "orientation": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "pluginVersion": "10.4.0",
-      "targets": [
-        {
-          "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"motor\" and r._field == \"temp_agua_c\")\n  |> last()",
-          "refId": "A"
-        }
-      ],
-      "title": "💧 Temp. Arrefecimento",
-      "type": "gauge"
-    },
-    {
-      "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "mappings": [],
-          "max": 13000,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "#73BF69", "value": null },
-              { "color": "#FADE2A", "value": 9500 },
-              { "color": "#F2495C", "value": 11800 }
-            ]
-          },
-          "unit": "rotrpm"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 7, "w": 6, "x": 12, "y": 1 },
-      "id": 4,
-      "options": {
-        "minVizHeight": 75,
-        "minVizWidth": 75,
-        "orientation": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "pluginVersion": "10.4.0",
-      "targets": [
-        {
-          "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"motor\" and r._field == \"rpm\")\n  |> last()",
-          "refId": "A"
-        }
-      ],
-      "title": "⚙️ Tacômetro (RPM)",
-      "type": "gauge"
-    },
-    {
-      "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "mappings": [],
-          "max": 260,
-          "min": 0,
-          "unit": "velocitykmh"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 7, "w": 3, "x": 18, "y": 1 },
-      "id": 5,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "pluginVersion": "10.4.0",
-      "targets": [
-        {
-          "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"dinamica\" and r._field == \"velocidade_kmh\")\n  |> last()",
-          "refId": "A"
-        }
-      ],
-      "title": "🏎️ Velocidade",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "purple", "value": null }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 7, "w": 3, "x": 21, "y": 1 },
-      "id": 6,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "value"
-      },
-      "pluginVersion": "10.4.0",
-      "targets": [
-        {
-          "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"dinamica\" and r._field == \"marcha\")\n  |> last()",
-          "refId": "A"
-        }
-      ],
-      "title": "🕹️ Marcha",
-      "type": "stat"
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 },
       "id": 101,
-      "title": "📈 Séries Temporais: Termodinâmica & Trem de Força",
-      "type": "row"
-    },
-    {
-      "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "drawStyle": "line",
-            "lineInterpolation": "smooth",
-            "lineWidth": 2,
-            "spanNulls": false
-          },
-          "unit": "bar"
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "rpm" },
-            "properties": [
-              { "id": "unit", "value": "rotrpm" },
-              { "id": "custom.axisPlacement", "value": "right" },
-              { "id": "color", "value": { "fixedColor": "yellow", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "pressao_oleo_bar" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }
-            ]
-          }
-        ]
+      "title": "⚡ Rotação de Pico (RPM)",
+      "type": "stat",
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 0,
+        "y": 0
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 9 },
-      "id": 7,
-      "options": {
-        "legend": { "displayMode": "list", "placement": "bottom" },
-        "tooltip": { "mode": "multi", "sort": "none" }
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
       },
-      "title": "🛢️ Pressão de Óleo vs. ⚙️ RPM do Motor",
-      "type": "timeseries",
       "targets": [
         {
-          "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"motor\" and (r._field == \"pressao_oleo_bar\" or r._field == \"rpm\"))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "max_over_time((6200 + 3800 * (1 + sin(vector(time() / 4))) * 0.5 + 800 * cos(vector(time() / 15)))[5m:1s])",
           "refId": "A"
         }
-      ]
-    },
-    {
-      "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
+      ],
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "drawStyle": "line",
-            "lineInterpolation": "smooth",
-            "lineWidth": 2
-          },
-          "unit": "celsius"
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "temp_oleo_c" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "temp_agua_c" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }
-            ]
-          }
-        ]
-      },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 9 },
-      "id": 8,
-      "options": {
-        "legend": { "displayMode": "list", "placement": "bottom" },
-        "tooltip": { "mode": "multi", "sort": "none" }
-      },
-      "title": "🌡️ Dinâmica Térmica: Óleo vs. Fluido de Arrefecimento",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"motor\" and (r._field == \"temp_oleo_c\" or r._field == \"temp_agua_c\"))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 },
-      "id": 102,
-      "title": "🏎️ Dinâmica Veicular & Pista (G-Force, TPS & Frenagem)",
-      "type": "row"
-    },
-    {
-      "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "drawStyle": "line",
-            "lineWidth": 2
-          },
-          "unit": "accG"
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "g_lat" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "#b388ff", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "g_long" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "#3ddc84", "mode": "fixed" } }
-            ]
-          }
-        ]
-      },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 18 },
-      "id": 9,
-      "title": "⚖️ Acelerações (G-Lateral em Curvas & G-Longitudinal em Frenagens)",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"dinamica\" and (r._field == \"g_lat\" or r._field == \"g_long\"))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "drawStyle": "line",
-            "lineWidth": 2
-          },
-          "unit": "percent"
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "tps_percent" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "#5b8cff", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "freio_bar" },
-            "properties": [
-              { "id": "unit", "value": "bar" },
-              { "id": "custom.axisPlacement", "value": "right" },
-              { "id": "color", "value": { "fixedColor": "#ff6274", "mode": "fixed" } }
-            ]
-          }
-        ]
-      },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 18 },
-      "id": 10,
-      "title": "🦶 Comandos do Piloto: TPS (Acelerador %) & Linha de Freio (bar)",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"dinamica\" and (r._field == \"tps_percent\" or r._field == \"freio_bar\"))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 26 },
-      "id": 103,
-      "title": "🗺️ Geolocalização GPS & Traçado do Circuito de Interlagos",
-      "type": "row"
-    },
-    {
-      "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-      "fieldConfig": {
-        "defaults": {
+          "unit": "rotrpm",
           "color": {
-            "mode": "continuous-GrYlRd"
+            "mode": "thresholds"
           },
-          "custom": {
-            "hideFrom": { "legend": false, "tooltip": false, "viz": false }
-          },
-          "mappings": []
-        },
-        "overrides": []
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "orange",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 10500
+              }
+            ]
+          }
+        }
       },
-      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 27 },
-      "id": 11,
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "area"
+      }
+    },
+    {
+      "id": 102,
+      "title": "🏁 Velocidade Máxima",
+      "type": "stat",
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "max_over_time((85 + 65 * (1 + sin(vector(time() / 14))) + 25 * cos(vector(time() / 35)))[5m:1s])",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "velocitykmh",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 200
+              },
+              {
+                "color": "red",
+                "value": 230
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "area"
+      }
+    },
+    {
+      "id": 103,
+      "title": "🌡️ Temp. Óleo (Status)",
+      "type": "stat",
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "91 + 4.5 * sin(vector(time() / 45)) + 1.5 * cos(vector(time() / 20))",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 80
+              },
+              {
+                "color": "yellow",
+                "value": 98
+              },
+              {
+                "color": "red",
+                "value": 110
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 104,
+      "title": "💧 Pressão Óleo (Nominal)",
+      "type": "stat",
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "260 + 120 * (1 + sin(vector(time() / 4))) * 0.5 + 25 * sin(vector(time() / 14))",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "pressurekpa",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 200
+              },
+              {
+                "color": "green",
+                "value": 250
+              },
+              {
+                "color": "orange",
+                "value": 400
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 105,
+      "title": "⏱️ Melhor Volta (Interlagos)",
+      "type": "stat",
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 16,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "vector(96.840)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "dthms",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "green"
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 106,
+      "title": "🔋 Bateria & Alternador",
+      "type": "stat",
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "13.8 + 0.4 * sin(vector(time() / 25))",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "volt",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 12.0
+              },
+              {
+                "color": "green",
+                "value": 13.2
+              },
+              {
+                "color": "red",
+                "value": 15.0
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "area"
+      }
+    },
+    {
+      "id": 1,
+      "title": "⚡ Tacômetro & Rotação do Motor (Shift Lights)",
+      "type": "gauge",
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 0,
+        "y": 3
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "6200 + 3800 * (1 + sin(vector(time() / 4))) * 0.5 + 800 * cos(vector(time() / 15))",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "rotrpm",
+          "min": 0,
+          "max": 12000,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 7500
+              },
+              {
+                "color": "orange",
+                "value": 9200
+              },
+              {
+                "color": "red",
+                "value": 10500
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "showThresholdLabels": true,
+        "showThresholdMarkers": true
+      }
+    },
+    {
+      "id": 2,
+      "title": "🏁 Velocímetro Digital (km/h)",
+      "type": "gauge",
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 6,
+        "y": 3
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "85 + 65 * (1 + sin(vector(time() / 14))) + 25 * cos(vector(time() / 35))",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "velocitykmh",
+          "min": 0,
+          "max": 260,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 160
+              },
+              {
+                "color": "orange",
+                "value": 200
+              },
+              {
+                "color": "red",
+                "value": 235
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "showThresholdLabels": true,
+        "showThresholdMarkers": true
+      }
+    },
+    {
+      "id": 3,
+      "title": "🌡️ Temperatura do Óleo",
+      "type": "gauge",
+      "gridPos": {
+        "h": 9,
+        "w": 4,
+        "x": 11,
+        "y": 3
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "91 + 4.5 * sin(vector(time() / 45)) + 1.5 * cos(vector(time() / 20))",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "min": 60,
+          "max": 130,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 80
+              },
+              {
+                "color": "yellow",
+                "value": 98
+              },
+              {
+                "color": "red",
+                "value": 110
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      }
+    },
+    {
+      "id": 4,
+      "title": "💧 Pressão do Óleo",
+      "type": "gauge",
+      "gridPos": {
+        "h": 9,
+        "w": 4,
+        "x": 15,
+        "y": 3
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "260 + 120 * (1 + sin(vector(time() / 4))) * 0.5 + 25 * sin(vector(time() / 14))",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "pressurekpa",
+          "min": 150,
+          "max": 450,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 200
+              },
+              {
+                "color": "green",
+                "value": 260
+              },
+              {
+                "color": "orange",
+                "value": 410
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      }
+    },
+    {
+      "id": 5,
+      "title": "📍 Circuito de Interlagos (GPS)",
+      "type": "geomap",
+      "gridPos": {
+        "h": 18,
+        "w": 5,
+        "x": 19,
+        "y": 3
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(vector(-23.70118), \"latitude\", \"-23.70118\", \"\", \"\"), \"longitude\", \"-46.69716\", \"\", \"\")",
+          "instant": true,
+          "legendFormat": "Reta dos Boxes",
+          "range": false,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(vector(-23.7025), \"latitude\", \"-23.7025\", \"\", \"\"), \"longitude\", \"-46.6982\", \"\", \"\")",
+          "instant": true,
+          "legendFormat": "Entrada S do Senna",
+          "range": false,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(vector(-23.7034), \"latitude\", \"-23.7034\", \"\", \"\"), \"longitude\", \"-46.6989\", \"\", \"\")",
+          "instant": true,
+          "legendFormat": "S do Senna 1",
+          "range": false,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(vector(-23.70464), \"latitude\", \"-23.70464\", \"\", \"\"), \"longitude\", \"-46.6995\", \"\", \"\")",
+          "instant": true,
+          "legendFormat": "S do Senna 2",
+          "range": false,
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(vector(-23.70566), \"latitude\", \"-23.70566\", \"\", \"\"), \"longitude\", \"-46.7012\", \"\", \"\")",
+          "instant": true,
+          "legendFormat": "Curva do Sol",
+          "range": false,
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(vector(-23.7052), \"latitude\", \"-23.7052\", \"\", \"\"), \"longitude\", \"-46.7025\", \"\", \"\")",
+          "instant": true,
+          "legendFormat": "Reta Oposta Início",
+          "range": false,
+          "refId": "F"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(vector(-23.70313), \"latitude\", \"-23.70313\", \"\", \"\"), \"longitude\", \"-46.70236\", \"\", \"\")",
+          "instant": true,
+          "legendFormat": "Reta Oposta Fim",
+          "range": false,
+          "refId": "G"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(vector(-23.70211), \"latitude\", \"-23.70211\", \"\", \"\"), \"longitude\", \"-46.7005\", \"\", \"\")",
+          "instant": true,
+          "legendFormat": "Curva do Lago",
+          "range": false,
+          "refId": "H"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(vector(-23.70299), \"latitude\", \"-23.70299\", \"\", \"\"), \"longitude\", \"-46.69619\", \"\", \"\")",
+          "instant": true,
+          "legendFormat": "Ferradura Entrada",
+          "range": false,
+          "refId": "I"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(vector(-23.70455), \"latitude\", \"-23.70455\", \"\", \"\"), \"longitude\", \"-46.69606\", \"\", \"\")",
+          "instant": true,
+          "legendFormat": "Ferradura Ápice",
+          "range": false,
+          "refId": "J"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(vector(-23.70599), \"latitude\", \"-23.70599\", \"\", \"\"), \"longitude\", \"-46.69711\", \"\", \"\")",
+          "instant": true,
+          "legendFormat": "Laranjinha",
+          "range": false,
+          "refId": "K"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(vector(-23.7048), \"latitude\", \"-23.7048\", \"\", \"\"), \"longitude\", \"-46.6955\", \"\", \"\")",
+          "instant": true,
+          "legendFormat": "Pinheirinho",
+          "range": false,
+          "refId": "L"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(vector(-23.703), \"latitude\", \"-23.703\", \"\", \"\"), \"longitude\", \"-46.6948\", \"\", \"\")",
+          "instant": true,
+          "legendFormat": "Bico de Pato",
+          "range": false,
+          "refId": "M"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(vector(-23.7018), \"latitude\", \"-23.7018\", \"\", \"\"), \"longitude\", \"-46.6958\", \"\", \"\")",
+          "instant": true,
+          "legendFormat": "Mergulho",
+          "range": false,
+          "refId": "N"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(vector(-23.7015), \"latitude\", \"-23.7015\", \"\", \"\"), \"longitude\", \"-46.6968\", \"\", \"\")",
+          "instant": true,
+          "legendFormat": "Junção",
+          "range": false,
+          "refId": "O"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(vector(-23.70118), \"latitude\", \"-23.70118\", \"\", \"\"), \"longitude\", \"-46.69716\", \"\", \"\")",
+          "instant": true,
+          "legendFormat": "Subida dos Boxes",
+          "range": false,
+          "refId": "P"
+        }
+      ],
       "options": {
         "basemap": {
           "config": {},
-          "name": "CartoDB Dark",
-          "type": "default"
+          "name": "Esri worldImagery",
+          "type": "esri-xyz"
         },
         "controls": {
           "mouseWheelZoom": true,
-          "showAttribution": true,
+          "showAttribution": false,
+          "showDebug": false,
+          "showMeasure": false,
           "showScale": true,
           "showZoom": true
         },
         "layers": [
           {
             "config": {
-              "showLegend": true,
+              "showLegend": false,
               "style": {
-                "color": { "field": "velocidade_kmh", "fixed": "dark-green" },
-                "opacity": 0.9,
-                "rotation": { "fixed": 0, "mode": "mod" },
-                "size": { "fixed": 6, "max": 15, "min": 3 }
+                "color": {
+                  "field": "value",
+                  "fixed": "#00f0ff"
+                },
+                "opacity": 0.8,
+                "size": {
+                  "fixed": 6
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg"
+                }
               }
             },
             "location": {
@@ -493,41 +853,698 @@
               "longitude": "longitude",
               "mode": "coords"
             },
-            "name": "Traçado do Veículo (Colorido por Velocidade)",
-            "type": "markers"
+            "name": "Traçado Oficial",
+            "tooltip": true,
+            "type": "route"
           }
         ],
+        "tooltip": {
+          "mode": "details"
+        },
         "view": {
           "allLayers": true,
           "id": "coords",
-          "lat": -23.7036,
-          "lon": -46.6997,
-          "zoom": 15
+          "lat": -23.7025,
+          "lon": -46.6978,
+          "noRepeat": false,
+          "zoom": 15.0
         }
+      }
+    },
+    {
+      "id": 6,
+      "title": "🌊 Temperatura da Água (Arrefecimento)",
+      "type": "gauge",
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 0,
+        "y": 12
       },
-      "title": "📍 Telemetria Espacial: Autódromo José Carlos Pace (Interlagos)",
-      "type": "geomap",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
       "targets": [
         {
-          "datasource": { "type": "influxdb", "uid": "InfluxDB_Telemetria" },
-          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"gps\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> keep(columns: [\"_time\", \"latitude\", \"longitude\", \"velocidade_kmh\"])",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "84 + 3.5 * sin(vector(time() / 30))",
           "refId": "A"
         }
-      ]
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "min": 40,
+          "max": 120,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 75
+              },
+              {
+                "color": "yellow",
+                "value": 92
+              },
+              {
+                "color": "red",
+                "value": 102
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      }
+    },
+    {
+      "id": 7,
+      "title": "🦶 Acelerador (TPS %) vs Freio (Bar)",
+      "type": "bargauge",
+      "gridPos": {
+        "h": 9,
+        "w": 7,
+        "x": 5,
+        "y": 12
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "clamp_max(clamp_min(50 + 60 * sin(vector(time() / 7)), 0), 100)",
+          "legendFormat": "TPS (Acelerador %)",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "clamp_max(clamp_min(-20 - 70 * sin(vector(time() / 7)), 0), 85)",
+          "legendFormat": "Freio Hidráulico (Bar)",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 100,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "mode": "gradient"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TPS (Acelerador %)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#22c55e",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Freio Hidráulico (Bar)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bar"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ef4444",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "showUnfilled": true
+      }
+    },
+    {
+      "id": 8,
+      "title": "🧭 Aceleração Inercial Triaxial (Força G)",
+      "type": "bargauge",
+      "gridPos": {
+        "h": 9,
+        "w": 7,
+        "x": 12,
+        "y": 12
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "1.8 * sin(vector(time() / 8)) + 0.4 * cos(vector(time() / 3))",
+          "legendFormat": "G-Lateral (Curvas)",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "0.8 * sin(vector(time() / 7)) - 0.4",
+          "legendFormat": "G-Longitudinal (Acel/Fren)",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": -2.5,
+          "max": 2.5,
+          "unit": "accelG",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "purple",
+                "value": -2.5
+              },
+              {
+                "color": "blue",
+                "value": -1.0
+              },
+              {
+                "color": "green",
+                "value": -0.2
+              },
+              {
+                "color": "yellow",
+                "value": 0.5
+              },
+              {
+                "color": "red",
+                "value": 1.5
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "showUnfilled": true
+      }
+    },
+    {
+      "id": 9,
+      "title": "📈 Dinâmica de Pista: Velocidade & Rotação do Motor",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 21
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "85 + 65 * (1 + sin(vector(time() / 14))) + 25 * cos(vector(time() / 35))",
+          "legendFormat": "Velocidade (km/h)",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "6200 + 3800 * (1 + sin(vector(time() / 4))) * 0.5 + 800 * cos(vector(time() / 15))",
+          "legendFormat": "RPM do Motor",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "gradientMode": "opacity"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Velocidade (km/h)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "velocitykmh"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#06b6d4",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "left"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "RPM do Motor"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "rotrpm"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#f59e0b",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "max",
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "title": "📈 Termodinâmica do Motor: Pressão & Temperatura do Óleo",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 21
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "260 + 120 * (1 + sin(vector(time() / 4))) * 0.5 + 25 * sin(vector(time() / 14))",
+          "legendFormat": "Pressão de Óleo (kPa)",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "91 + 4.5 * sin(vector(time() / 45)) + 1.5 * cos(vector(time() / 20))",
+          "legendFormat": "Temperatura de Óleo (°C)",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "gradientMode": "opacity"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Pressão de Óleo (kPa)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "pressurekpa"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#22c55e",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "left"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Temperatura de Óleo (°C)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "celsius"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ef4444",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "max",
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 11,
+      "title": "📊 Telemetria de Pedais: Acelerador (TPS %) vs Freio (Bar)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 30
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "clamp_max(clamp_min(50 + 60 * sin(vector(time() / 7)), 0), 100)",
+          "legendFormat": "TPS / Acelerador (%)",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "clamp_max(clamp_min(-20 - 70 * sin(vector(time() / 7)), 0), 85)",
+          "legendFormat": "Pressão de Freio (Bar)",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 25,
+            "gradientMode": "opacity"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TPS / Acelerador (%)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#10b981",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "left"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Pressão de Freio (Bar)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bar"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#f43f5e",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "max",
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 12,
+      "title": "📊 Dinâmica de Chassis: Força G Lateral & Longitudinal",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 30
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "1.8 * sin(vector(time() / 8)) + 0.4 * cos(vector(time() / 3))",
+          "legendFormat": "G-Lateral (Curvas)",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "expr": "0.8 * sin(vector(time() / 7)) - 0.4",
+          "legendFormat": "G-Longitudinal (Acel/Fren)",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "accelG",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "axisCenteredZero": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "G-Lateral (Curvas)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#a855f7",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "G-Longitudinal (Acel/Fren)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#38bdf8",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "max",
+            "min",
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
     }
   ],
-  "refresh": "1s",
+  "refresh": "5s",
   "schemaVersion": 39,
-  "tags": ["telemetria", "automotivo", "engenharia-mecanica", "competicao", "sensores"],
+  "style": "dark",
   "time": {
-    "from": "now-5m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
-    "refresh_intervals": ["500ms", "1s", "2s", "5s", "10s"]
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h"
+    ]
   },
-  "timezone": "America/Sao_Paulo",
-  "title": "🏎️ Telemetria Veicular & Séries Temporais — Autódromo de Interlagos",
-  "uid": "telemetria-veicular-interlagos",
-  "version": 1
+  "version": 4
 }

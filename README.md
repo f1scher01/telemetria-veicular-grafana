@@ -4,6 +4,7 @@
 ### Monitoramento Térmico, Dinâmica Veicular e Geolocalização GPS em Tempo Real
 **Engenharia Mecânica — Instituto Mauá de Tecnologia (IMT)**
 
+[![Grafana Cloud](https://img.shields.io/badge/Grafana%20Cloud-Painel%20Ao%20Vivo-F46800?style=for-the-badge&logo=grafana&logoColor=white)](https://fischerpaez.grafana.net/public-dashboards/5ea12a828dd1478eb54041c8624531d0)
 [![Grafana](https://img.shields.io/badge/Grafana-10.4-orange?style=for-the-badge&logo=grafana&logoColor=white)](https://grafana.com)
 [![InfluxDB](https://img.shields.io/badge/InfluxDB-2.7-blue?style=for-the-badge&logo=influxdb&logoColor=white)](https://www.influxdata.com)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com)
@@ -13,6 +14,8 @@
 <br/>
 
 **Plataforma completa de aquisição, modelagem física e visualização contínua de parâmetros termodinâmicos, cinemáticos e espaciais no Grafana.**
+
+👉 **[Acessar Dashboard Online no Grafana Cloud](https://fischerpaez.grafana.net/public-dashboards/5ea12a828dd1478eb54041c8624531d0)**
 
 </div>
 
@@ -129,13 +132,21 @@ O pipeline gera relatórios gráficos de alta resolução para validação de ca
 
 ---
 
-## 🚀 Como Executar o Projeto no Grafana
+## 🚀 Como Executar e Acessar o Dashboard no Grafana
 
-O projeto foi modelado para a stack industrial padrão de engenharia automotiva: **Grafana + InfluxDB**.
+O projeto foi modelado para a stack industrial de ponta: **Grafana + InfluxDB**.
 
-### Método 1: Stack Completa com Docker (Recomendado)
+### 🌐 Método 1: Acesso Imediato no Grafana Cloud (Sem Instalação)
 
-> ⚠️ **Importante sobre os links locais:** Os endereços `http://localhost:3000` (Grafana) e `http://localhost:8086` (InfluxDB) referem-se à sua máquina local (`127.0.0.1`). Eles **só respondem no navegador após os contêineres serem iniciados** com o comando abaixo. Caso o Docker não esteja em execução, o navegador exibirá erro de conexão recusada.
+O dashboard oficial está publicado e ativo no Grafana Cloud, permitindo visualização imediata com todos os painéis industriais e métricas dinâmicas:
+
+👉 **[Acessar Painel Oficial no Grafana Cloud](https://fischerpaez.grafana.net/public-dashboards/5ea12a828dd1478eb54041c8624531d0)**
+
+---
+
+### Método 2: Stack Local Completa com Docker
+
+> ⚠️ **Importante sobre os links locais:** Os endereços `http://localhost:3000` (Grafana) e `http://localhost:8086` (InfluxDB) referem-se à sua máquina local (`127.0.0.1`). Eles **só respondem no navegador após os contêineres serem iniciados** com o comando abaixo. Caso o Docker não esteja em execução, utilize a **[Versão no Grafana Cloud](https://fischerpaez.grafana.net/public-dashboards/5ea12a828dd1478eb54041c8624531d0)**.
 
 #### 1. Pré-requisito
 Ter o [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado e em execução no computador.
