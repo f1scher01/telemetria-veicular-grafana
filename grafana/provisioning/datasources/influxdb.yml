@@ -1,0 +1,16 @@
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB_Telemetria
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    isDefault: true
+    jsonData:
+      version: Flux
+      organization: maua_racing
+      defaultBucket: telemetria
+      tlsSkipVerify: true
+    secureJsonData:
+      token: telemetria-super-secret-token-maua-2026
+    editable: false
