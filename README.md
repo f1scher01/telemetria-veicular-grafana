@@ -41,19 +41,17 @@ O sistema captura variáveis críticas do trem de força (pressão e temperatura
 
 ```mermaid
 flowchart TD
-    subgraph Aquisicao ["🏎️ Camada Veicular & Sensores"]
-        direction TB
-        H1["Sensores Automotivos & CAN-Bus"]
-        A1["Transdutor de Pressão de Óleo 0-10 bar"]
-        A2["Sensores NTC de Temperatura de Óleo e Água"]
+    subgraph Aquisicao [" "]
+        H1["🏎️ <b>Camada Veicular & Sensores</b>"]
+        A1["Transdutor de Pressão de Óleo (0-10 bar)"]
+        A2["Sensores NTC de Temperatura (Óleo & Água)"]
         A3["Tacômetro / Sensor de Fase & Rotação"]
         A4["Módulo GNSS / GPS 10Hz"]
         H1 --> A1 & A2 & A3 & A4
     end
 
-    subgraph Ingestao ["⚡ Pipeline de Modelagem & Ingestão"]
-        direction TB
-        H2["Motor Físico Python"]
+    subgraph Ingestao [" "]
+        H2["⚡ <b>Pipeline de Modelagem & Ingestão (Python)</b>"]
         B1["src/simulator.py — Cinemática & Termodinâmica"]
         B2["src/ingestor.py — Buffer & Line Protocol"]
         H2 --> B1 --> B2
@@ -61,24 +59,29 @@ flowchart TD
 
     A1 & A2 & A3 & A4 --> H2
 
-    B2 --> INTERFACE["🖥️ Seleção de Modo de Visualização"]
+    B2 --> INTERFACE["🖥️ <b>Seleção de Modo de Visualização</b>"]
 
-    subgraph VisualizacaoAutonoma ["🌐 Modo 1: Dashboard Autônomo (Sem Docker)"]
-        direction TB
+    subgraph VisualizacaoAutonoma [" "]
+        H3["🌐 <b>Modo 1: Dashboard Autônomo (Sem Docker)</b>"]
         V1["run_dashboard.py / index.html (Porta 3000)"]
         V2["Gauges, Tacômetro LED, GPS Interlagos & Séries Temporais"]
-        V1 --> V2
+        H3 --> V1 --> V2
     end
 
-    subgraph VisualizacaoIndustrial ["🗄️ Modo 2: Stack Industrial (Docker + InfluxDB + Grafana)"]
-        direction TB
+    subgraph VisualizacaoIndustrial [" "]
+        H4["🗄️ <b>Modo 2: Stack Industrial (Docker + InfluxDB + Grafana)</b>"]
         I1["InfluxDB 2.7 (Time-Series DB)"]
-        I2["Grafana 10.4 (Painel de Engenharia)"]
-        I1 --> I2
+        I2["Grafana 10.4 (Painel de Engenharia Automotiva)"]
+        H4 --> I1 --> I2
     end
 
-    INTERFACE --> V1
-    INTERFACE --> I1
+    INTERFACE --> H3
+    INTERFACE --> H4
+
+    classDef header fill:#1f6feb,stroke:#388bfd,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef interface fill:#238636,stroke:#2ea043,stroke-width:2px,color:#ffffff,font-weight:bold;
+    class H1,H2,H3,H4 header;
+    class INTERFACE interface;
 ```
 
 ---
