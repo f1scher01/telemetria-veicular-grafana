@@ -1,14 +1,14 @@
 {
   "id": null,
   "uid": "firsczl",
-  "title": "🏎️ Telemetria Veicular & Monitoramento do Motor — Interlagos",
-  "description": "Cockpit analítico de telemetria automotiva, termodinâmica do motor e dinâmica veicular em tempo real.",
+  "title": "🏎️ Telemetria Veicular Simulada — Cockpit Analítico de Motor e Dinâmica",
+  "description": "Modelo de cockpit de telemetria automotiva. TODAS as séries são sintéticas, geradas por funções trigonométricas em PromQL, com faixas e limiares escolhidos para reproduzir a ordem de grandeza de um veículo de competição. Não há sensor, aquisição embarcada nem volta cronometrada. O traçado exibido no mapa são coordenadas de referência do Autódromo de Interlagos, usadas como pano de fundo geográfico.",
   "tags": [
     "telemetria",
     "automotivo",
     "engenharia-mecanica",
-    "interlagos",
-    "sensores"
+    "dados-simulados",
+    "demonstracao"
   ],
   "timezone": "America/Sao_Paulo",
   "editable": true,
@@ -18,7 +18,8 @@
   "panels": [
     {
       "id": 101,
-      "title": "⚡ Rotação de Pico (RPM)",
+      "title": "⚡ Rotação de Pico (RPM) · simulado",
+      "description": "Máximo da série sintética de rotação nos últimos 5 minutos. Função geradora: 6200 + 3800·sin(t/4)/2 + 800·cos(t/15), com envelope de 2.400 a 10.800 rpm.",
       "type": "stat",
       "gridPos": {
         "h": 3,
@@ -74,7 +75,8 @@
     },
     {
       "id": 102,
-      "title": "🏁 Velocidade Máxima",
+      "title": "🏁 Velocidade Máxima · simulado",
+      "description": "Máximo da série sintética de velocidade nos últimos 5 minutos. Função geradora: 85 + 65·(1 + sin(t/14)) + 25·cos(t/35).",
       "type": "stat",
       "gridPos": {
         "h": 3,
@@ -134,7 +136,8 @@
     },
     {
       "id": 103,
-      "title": "🌡️ Temp. Óleo (Status)",
+      "title": "🌡️ Temp. Óleo · simulado",
+      "description": "Série sintética oscilando em torno de 91 °C. Os limiares de cor seguem a prática de motor em regime: abaixo de 80 °C o óleo ainda não atingiu viscosidade de trabalho; acima de 110 °C há risco de degradação do filme lubrificante.",
       "type": "stat",
       "gridPos": {
         "h": 3,
@@ -198,7 +201,8 @@
     },
     {
       "id": 104,
-      "title": "💧 Pressão Óleo (Nominal)",
+      "title": "💧 Pressão Óleo · simulado",
+      "description": "Série sintética correlacionada à rotação, como ocorre em bomba de óleo acionada pelo virabrequim. Faixa de 260 a 405 kPa.",
       "type": "stat",
       "gridPos": {
         "h": 3,
@@ -262,51 +266,23 @@
     },
     {
       "id": 105,
-      "title": "⏱️ Melhor Volta (Interlagos)",
-      "type": "stat",
+      "title": "⚠️ Natureza dos dados",
+      "type": "text",
       "gridPos": {
         "h": 3,
         "w": 4,
         "x": 16,
         "y": 0
       },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "grafanacloud-prom"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "grafanacloud-prom"
-          },
-          "expr": "vector(96.840)",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "dthms",
-          "color": {
-            "mode": "fixed",
-            "fixedColor": "green"
-          }
-        }
-      },
       "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "colorMode": "value",
-        "graphMode": "none"
+        "mode": "markdown",
+        "content": "**Dados simulados.** Todas as séries deste painel são geradas por funções trigonométricas em PromQL. Não há sensor, aquisição embarcada nem volta cronometrada."
       }
     },
     {
       "id": 106,
-      "title": "🔋 Bateria & Alternador",
+      "title": "🔋 Bateria & Alternador · simulado",
+      "description": "Série sintética em torno de 13,8 V, faixa típica de alternador carregando bateria de 12 V.",
       "type": "stat",
       "gridPos": {
         "h": 3,
@@ -370,7 +346,8 @@
     },
     {
       "id": 1,
-      "title": "⚡ Tacômetro & Rotação do Motor (Shift Lights)",
+      "title": "⚡ Tacômetro & Rotação do Motor · sinal simulado",
+      "description": "Sinal sintético de rotação. Os limiares reproduzem a lógica de shift lights: amarelo a partir de 7.500 rpm, laranja em 9.200 rpm e vermelho em 10.500 rpm, próximo do corte.",
       "type": "gauge",
       "gridPos": {
         "h": 9,
@@ -430,7 +407,8 @@
     },
     {
       "id": 2,
-      "title": "🏁 Velocímetro Digital (km/h)",
+      "title": "🏁 Velocímetro Digital (km/h) · sinal simulado",
+      "description": "Sinal sintético de velocidade, com período mais longo que o da rotação para imitar a sucessão de marchas dentro de uma mesma aceleração.",
       "type": "gauge",
       "gridPos": {
         "h": 9,
@@ -490,7 +468,8 @@
     },
     {
       "id": 3,
-      "title": "🌡️ Temperatura do Óleo",
+      "title": "🌡️ Temperatura do Óleo · sinal simulado",
+      "description": "Sinal sintético de temperatura do óleo, com constante de tempo longa (período de 45 s) para representar a inércia térmica do cárter.",
       "type": "gauge",
       "gridPos": {
         "h": 9,
@@ -550,7 +529,8 @@
     },
     {
       "id": 4,
-      "title": "💧 Pressão do Óleo",
+      "title": "💧 Pressão do Óleo · sinal simulado",
+      "description": "Sinal sintético de pressão do óleo, deliberadamente em fase com a rotação (mesmo período de 4 s), como em bomba acionada pelo virabrequim.",
       "type": "gauge",
       "gridPos": {
         "h": 9,
@@ -610,7 +590,8 @@
     },
     {
       "id": 5,
-      "title": "📍 Circuito de Interlagos (GPS)",
+      "title": "📍 Traçado de Interlagos · coordenadas de referência",
+      "description": "Pontos de referência do Autódromo José Carlos Pace usados como pano de fundo geográfico. São coordenadas fixas, inseridas manualmente, e não posição medida por receptor GPS embarcado. O painel demonstra a camada geomap do Grafana e o encadeamento de pontos em rota.",
       "type": "geomap",
       "gridPos": {
         "h": 18,
@@ -853,7 +834,7 @@
               "longitude": "longitude",
               "mode": "coords"
             },
-            "name": "Traçado Oficial",
+            "name": "Pontos de referência do traçado",
             "tooltip": true,
             "type": "route"
           }
@@ -873,7 +854,8 @@
     },
     {
       "id": 6,
-      "title": "🌊 Temperatura da Água (Arrefecimento)",
+      "title": "🌊 Temperatura da Água (Arrefecimento) · sinal simulado",
+      "description": "Sinal sintético do circuito de arrefecimento, mantido abaixo da temperatura do óleo, como é usual em motor com termostato atuando por volta de 85 °C.",
       "type": "gauge",
       "gridPos": {
         "h": 9,
@@ -933,7 +915,8 @@
     },
     {
       "id": 7,
-      "title": "🦶 Acelerador (TPS %) vs Freio (Bar)",
+      "title": "🦶 Acelerador (TPS %) vs Freio (Bar) · sinal simulado",
+      "description": "Os dois sinais são gerados em oposição de fase e saturados por clamp, de modo que acelerador e freio nunca ficam ativos ao mesmo tempo. É uma simplificação: pilotos reais praticam sobreposição em trail braking.",
       "type": "bargauge",
       "gridPos": {
         "h": 9,
@@ -1025,7 +1008,8 @@
     },
     {
       "id": 8,
-      "title": "🧭 Aceleração Inercial Triaxial (Força G)",
+      "title": "🧭 Aceleração Inercial Triaxial (Força G) · sinal simulado",
+      "description": "Sinais sintéticos de acelerômetro. A componente longitudinal recebe deslocamento negativo de 0,4 g para representar arrasto aerodinâmico e freio motor predominando sobre a aceleração ao longo de uma volta.",
       "type": "bargauge",
       "gridPos": {
         "h": 9,
@@ -1100,7 +1084,8 @@
     },
     {
       "id": 9,
-      "title": "📈 Dinâmica de Pista: Velocidade & Rotação do Motor",
+      "title": "📈 Dinâmica de Pista: Velocidade & Rotação do Motor · séries simuladas",
+      "description": "Duas séries sintéticas em eixos independentes. O período da rotação é mais curto que o da velocidade, produzindo o padrão de dente de serra que a troca de marchas imprime ao tacômetro sem interromper o ganho de velocidade.",
       "type": "timeseries",
       "gridPos": {
         "h": 9,
@@ -1209,7 +1194,8 @@
     },
     {
       "id": 10,
-      "title": "📈 Termodinâmica do Motor: Pressão & Temperatura do Óleo",
+      "title": "📈 Termodinâmica do Motor: Pressão & Temperatura do Óleo · séries simuladas",
+      "description": "Séries sintéticas com constantes de tempo distintas: a pressão acompanha a rotação quase instantaneamente, enquanto a temperatura varia devagar por inércia térmica. O contraste entre os dois eixos é o ponto do painel.",
       "type": "timeseries",
       "gridPos": {
         "h": 9,
@@ -1318,7 +1304,8 @@
     },
     {
       "id": 11,
-      "title": "📊 Telemetria de Pedais: Acelerador (TPS %) vs Freio (Bar)",
+      "title": "📊 Telemetria de Pedais: Acelerador (TPS %) vs Freio (Bar) · séries simuladas",
+      "description": "Séries sintéticas em oposição de fase. Num sistema real, este é o gráfico que revela sobreposição de pedais, ponto de frenagem e progressividade de saída de curva.",
       "type": "timeseries",
       "gridPos": {
         "h": 9,
@@ -1427,7 +1414,8 @@
     },
     {
       "id": 12,
-      "title": "📊 Dinâmica de Chassis: Força G Lateral & Longitudinal",
+      "title": "📊 Dinâmica de Chassis: Força G Lateral & Longitudinal · séries simuladas",
+      "description": "Séries sintéticas de acelerômetro com eixo centrado em zero. Num sistema real, o envelope conjunto destas duas componentes forma o círculo de atrito do pneu.",
       "type": "timeseries",
       "gridPos": {
         "h": 9,
@@ -1546,5 +1534,5 @@
       "24h"
     ]
   },
-  "version": 4
+  "version": 5
 }
