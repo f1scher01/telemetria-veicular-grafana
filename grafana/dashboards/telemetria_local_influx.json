@@ -1,0 +1,161 @@
+{
+  "uid": "telemetria-local-influx",
+  "title": "Telemetria Veicular Simulada · InfluxDB local",
+  "description": "Lê as séries gravadas por src/ingestor.py no bucket 'telemetria'. Todos os dados são gerados por src/simulator.py.",
+  "tags": ["telemetria", "simulado", "influxdb", "flux"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "refresh": "5s",
+  "time": { "from": "now-5m", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "text",
+      "title": "Natureza dos dados",
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 0 },
+      "options": {
+        "mode": "markdown",
+        "content": "**Séries simuladas.** Geradas por `src/simulator.py` (avanço por distância, G lateral = v²/(R·g), térmica de primeira ordem) e gravadas via Line Protocol por `src/ingestor.py`. Não há veículo instrumentado."
+      }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Velocidade (km/h)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "datasource": { "type": "influxdb", "uid": "influxdb_telemetria" },
+      "fieldConfig": { "defaults": { "unit": "velocitykmh", "min": 0 }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "influxdb", "uid": "influxdb_telemetria" },
+          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"dinamica\" and r._field == \"velocidade_kmh\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"velocidade\")"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Rotação do motor (rpm)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "datasource": { "type": "influxdb", "uid": "influxdb_telemetria" },
+      "fieldConfig": { "defaults": { "unit": "rotrpm", "min": 3000, "max": 12500 }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "influxdb", "uid": "influxdb_telemetria" },
+          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"motor\" and r._field == \"rpm\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Lubrificação: pressão (bar) e temperatura do óleo (°C)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "datasource": { "type": "influxdb", "uid": "influxdb_telemetria" },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "temp_oleo_c" },
+            "properties": [
+              { "id": "unit", "value": "celsius" },
+              { "id": "custom.axisPlacement", "value": "right" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "pressao_oleo_bar" },
+            "properties": [ { "id": "unit", "value": "pressurebar" } ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "influxdb", "uid": "influxdb_telemetria" },
+          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"motor\" and (r._field == \"pressao_oleo_bar\" or r._field == \"temp_oleo_c\"))\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Temperatura da água (°C)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "datasource": { "type": "influxdb", "uid": "influxdb_telemetria" },
+      "fieldConfig": { "defaults": { "unit": "celsius" }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "influxdb", "uid": "influxdb_telemetria" },
+          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"motor\" and r._field == \"temp_agua_c\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Comandos do piloto: acelerador (%) e freio (bar)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "datasource": { "type": "influxdb", "uid": "influxdb_telemetria" },
+      "fieldConfig": { "defaults": { "min": 0 }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "influxdb", "uid": "influxdb_telemetria" },
+          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"dinamica\" and (r._field == \"tps_percent\" or r._field == \"freio_bar\"))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Acelerações (g)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
+      "datasource": { "type": "influxdb", "uid": "influxdb_telemetria" },
+      "fieldConfig": { "defaults": { "unit": "none", "decimals": 2 }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "influxdb", "uid": "influxdb_telemetria" },
+          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"dinamica\" and (r._field == \"g_lat\" or r._field == \"g_long\"))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "geomap",
+      "title": "Posição no traçado (GPS simulado)",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 28 },
+      "datasource": { "type": "influxdb", "uid": "influxdb_telemetria" },
+      "options": {
+        "view": { "id": "coords", "lat": -23.7036, "lon": -46.6997, "zoom": 15 },
+        "controls": { "showZoom": true, "mouseWheelZoom": true },
+        "basemap": { "type": "default", "name": "Mapa base" },
+        "layers": [
+          {
+            "type": "markers",
+            "name": "Trajetória",
+            "location": { "mode": "coords", "latitude": "latitude", "longitude": "longitude" },
+            "config": {
+              "size": { "fixed": 4 },
+              "color": { "field": "velocidade_kmh", "fixed": "dark-green" },
+              "showLegend": true
+            }
+          }
+        ]
+      },
+      "fieldConfig": { "defaults": { "color": { "mode": "continuous-GrYlRd" } }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "influxdb", "uid": "influxdb_telemetria" },
+          "query": "from(bucket: \"telemetria\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"gps\")\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> keep(columns: [\"_time\", \"latitude\", \"longitude\", \"velocidade_kmh\"])"
+        }
+      ]
+    }
+  ]
+}

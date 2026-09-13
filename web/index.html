@@ -448,15 +448,15 @@
     <div class="header-meta">
       <div class="meta-box">
         <div class="label">Volta Atual</div>
-        <div class="val" id="lapDisplay">1 / 1</div>
+        <div class="val" id="lapDisplay">1</div>
       </div>
       <div class="meta-box">
         <div class="label">Volta simulada</div>
-        <div class="val">1:40.200</div>
+        <div class="val" id="lapTimeRef">--</div>
       </div>
       <div class="meta-box">
         <div class="label">Vel. Máxima</div>
-        <div class="val" id="topSpeedDisplay">236.4 km/h</div>
+        <div class="val" id="topSpeedDisplay">--</div>
       </div>
     </div>
   </header>
@@ -475,8 +475,8 @@
 
     <div class="timeline-container">
       <span class="time-display" id="timeCurrent">00:00.0</span>
-      <input type="range" id="timelineSlider" min="0" max="1599" value="0">
-      <span class="time-display" style="color:var(--text-muted)">01:40.2</span>
+      <input type="range" id="timelineSlider" min="0" max="0" value="0">
+      <span class="time-display" id="timeTotal" style="color:var(--text-muted)">--</span>
     </div>
 
     <div class="sector-badge" id="sectorBadge">📍 Reta dos Boxes</div>
@@ -489,7 +489,7 @@
     <div class="card">
       <div class="card-title">
         Trem de Força & Cockpit
-        <span class="tag">CAN-BUS 10 Hz</span>
+        <span class="tag">MODELO 10 Hz</span>
       </div>
 
       <div class="gauge-cluster">
@@ -540,7 +540,7 @@
             <!-- Brake Bar -->
             <div class="pedal-bar-wrapper">
               <div class="pedal-header">
-                <span style="color:var(--accent-red)">Freio Hidr.</span>
+                <span style="color:var(--accent-red)">Freio</span>
                 <span id="brakeVal">0 bar</span>
               </div>
               <div class="bar-track">
@@ -580,7 +580,7 @@
     <div class="card gg-card">
       <div class="card-title" style="width:100%">
         Diagrama G-G (Aceleração Inercial)
-        <span class="tag">IMU 6-DOF</span>
+        <span class="tag">Δv/Δt · v²/R</span>
       </div>
       <canvas id="ggCanvas" width="260" height="260"></canvas>
       <div class="gg-stats">
@@ -634,6 +634,16 @@
     const gLatVal = document.getElementById('gLatVal');
     const gLongVal = document.getElementById('gLongVal');
     const gTotalVal = document.getElementById('gTotalVal');
+    const lapDisplay = document.getElementById('lapDisplay');
+
+    // Referências da sessão calculadas a partir dos próprios dados, e não fixadas no HTML
+    if (totalPoints > 0) {
+      const duracao = totalPoints / 10;
+      document.getElementById('lapTimeRef').textContent = formatLapTime(duracao);
+      document.getElementById('timeTotal').textContent = formatLapTime(duracao);
+      document.getElementById('topSpeedDisplay').textContent = `${Math.max(...TELEMETRY_DATA.map(d => d.speed_kmh)).toFixed(1)} km/h`;
+      timelineSlider.max = totalPoints - 1;
+    }
 
     // CANVAS ELEMENTS
     const tachCanvas = document.getElementById('tachometerCanvas');
@@ -884,7 +894,7 @@
       chartCtx.beginPath();
       for (let i = 0; i < totalPoints; i++) {
         const x = (i / totalPoints) * w;
-        const y = h - ((TELEMETRY_DATA[i].rpm - 4000) / 6000) * (h - 20) - 10;
+        const y = h - ((TELEMETRY_DATA[i].rpm - 4000) / 8500) * (h - 20) - 10;
         if (i === 0) chartCtx.moveTo(x, y);
         else chartCtx.lineTo(x, y);
       }
@@ -927,6 +937,7 @@
       gTotalVal.textContent = `${gTotal.toFixed(2)} G`;
 
       timeCurrent.textContent = formatLapTime(d.lap_time_s);
+      lapDisplay.textContent = d.lap;
       timelineSlider.value = currentIndex;
       sectorBadge.textContent = `📍 ${d.sector.replace(/_/g, ' ')}`;
 

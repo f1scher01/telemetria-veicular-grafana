@@ -44,7 +44,7 @@ def start_server():
 
     url = f"http://localhost:{port}"
     print("=" * 70)
-    print("🏎️  SISTEMA DE TELEMETRIA VEICULAR — PROTÓTIPO DE COMPETIÇÃO (INTERLAGOS)")
+    print("🏎️  TELEMETRIA VEICULAR SIMULADA · COCKPIT WEB (TRAÇADO DE INTERLAGOS)")
     print("=" * 70)
     print(f"✅ Servidor Web de Telemetria ativo em: {url}")
     print("🌐 Abrindo seu navegador padrao automaticamente...")

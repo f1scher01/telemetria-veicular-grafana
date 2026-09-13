@@ -1,6 +1,6 @@
 """
 Ingestor de Telemetria Veicular para o InfluxDB 2.x.
-Transmite dados de sensores mecânicos e GPS em tempo real ou em lote.
+Transmite as séries geradas pelo simulador (motor, dinâmica e GPS) em tempo real ou em lote.
 """
 
 import time
@@ -146,7 +146,7 @@ def run_backfill(points_count: int = 1500, rate_hz: int = SAMPLING_RATE_HZ):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Ingestor de Telemetria Veicular IMT")
+    parser = argparse.ArgumentParser(description="Ingestor de telemetria simulada para o InfluxDB")
     parser.add_argument("--mode", choices=["stream", "backfill"], default="stream", help="Modo de operação: stream (tempo real) ou backfill (histórico)")
     parser.add_argument("--points", type=int, default=1500, help="Quantidade de pontos para o modo backfill")
     args = parser.parse_args()

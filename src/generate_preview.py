@@ -54,8 +54,10 @@ def generate_telemetry_figures(csv_path: str = "data/sample_lap_interlagos.csv")
     gs = gridspec.GridSpec(4, 3, width_ratios=[1.25, 1.15, 0.95], height_ratios=[1, 1, 1, 1], 
                            wspace=0.32, hspace=0.44, left=0.06, right=0.96, top=0.88, bottom=0.06)
 
-    fig.suptitle("SISTEMA DE TELEMETRIA VEICULAR — ANÁLISE DE VOLTA RÁPIDA (AUTÓDROMO DE INTERLAGOS)\n"
-                 "Aquisição a 10 Hz | Protótipo Experimental 01 | Tempo de Volta: 1m40s2 | Velocidade Máx: 236.4 km/h",
+    minutos, segundos = divmod(len(df) / 10.0, 60)
+    fig.suptitle("TELEMETRIA VEICULAR SIMULADA · VOLTA COMPLETA NO TRAÇADO DE INTERLAGOS\n"
+                 f"Modelo físico a 10 Hz | Dados sintéticos | Tempo de volta: {int(minutos)}:{segundos:04.1f} | "
+                 f"Velocidade máx.: {speed.max():.1f} km/h",
                  fontsize=14, fontweight='bold', color='#60a5fa', y=0.965)
 
     # Subplot 1: Velocidade & Marcha
@@ -77,11 +79,11 @@ def generate_telemetry_figures(csv_path: str = "data/sample_lap_interlagos.csv")
     # Subplot 2: Rotação do Motor (RPM) & Redline
     ax2 = fig.add_subplot(gs[1, 0], facecolor=card_color)
     ax2.plot(time, rpm, color='#a855f7', linewidth=1.6, label='RPM Motor')
-    ax2.axhline(8500, color='#ef4444', linestyle=':', linewidth=1.4, label='Shift Light (8500 RPM)')
-    ax2.axhline(9200, color='#dc2626', linestyle='--', linewidth=1.4, label='Corte Redline (9200 RPM)')
+    ax2.axhline(11000, color='#ef4444', linestyle=':', linewidth=1.4, label='Shift light (11.000 rpm)')
+    ax2.axhline(12400, color='#dc2626', linestyle='--', linewidth=1.4, label='Limitador do modelo (12.400 rpm)')
     ax2.set_ylabel("RPM", color='#a855f7', fontsize=10, fontweight='bold')
     ax2.set_xlim(0, max(time))
-    ax2.set_ylim(4000, 9800)
+    ax2.set_ylim(4000, 12800)
     ax2.grid(True, linestyle='--', alpha=0.35, color=grid_color)
     ax2.tick_params(colors=sub_color, labelsize=9)
     ax2.legend(loc='lower left', fontsize=8, facecolor=card_color, edgecolor=grid_color)
@@ -97,10 +99,10 @@ def generate_telemetry_figures(csv_path: str = "data/sample_lap_interlagos.csv")
     ax3.tick_params(colors=sub_color, labelsize=9)
     
     ax3_brake = ax3.twinx()
-    ax3_brake.fill_between(time, 0, brake, color='#ef4444', alpha=0.45, label='Freio Hidráulico (bar)')
+    ax3_brake.fill_between(time, 0, brake, color='#ef4444', alpha=0.45, label='Pressão de freio (bar)')
     ax3_brake.plot(time, brake, color='#ef4444', linewidth=1.2)
     ax3_brake.set_ylabel("Pressão Freio (bar)", color='#ef4444', fontsize=9)
-    ax3_brake.set_ylim(0, 70)
+    ax3_brake.set_ylim(0, 90)
     ax3_brake.tick_params(colors='#ef4444', labelsize=8)
     ax3.set_title("Ações do Piloto: Sobreposição de Acelerador e Frenagem", color=text_color, fontsize=11, fontweight='bold', pad=10)
 
@@ -112,11 +114,11 @@ def generate_telemetry_figures(csv_path: str = "data/sample_lap_interlagos.csv")
     ax4.set_xlabel("Tempo de Volta (s)", color=text_color, fontsize=10, fontweight='bold')
     ax4.set_ylabel("Aceleração (G)", color=text_color, fontsize=10, fontweight='bold')
     ax4.set_xlim(0, max(time))
-    ax4.set_ylim(-2.2, 2.2)
+    ax4.set_ylim(-2.5, 2.5)
     ax4.grid(True, linestyle='--', alpha=0.35, color=grid_color)
     ax4.tick_params(colors=sub_color, labelsize=9)
     ax4.legend(loc='upper right', fontsize=8, facecolor=card_color, edgecolor=grid_color)
-    ax4.set_title("Dinâmica Veicular: Cargas Inerciais e Aceleração Triaxial", color=text_color, fontsize=11, fontweight='bold', pad=10)
+    ax4.set_title("Dinâmica Veicular: Acelerações Lateral e Longitudinal", color=text_color, fontsize=11, fontweight='bold', pad=10)
 
     # Subplot 5: Mapa do Traçado GPS Interlagos (Colorido por Velocidade)
     ax5 = fig.add_subplot(gs[0:2, 1], facecolor=card_color)
