@@ -4,7 +4,7 @@
 
 ### Modelo físico, ingestão em InfluxDB e dashboards Grafana provisionados
 
-[![Dashboard](https://img.shields.io/badge/Grafana%20Cloud-Painel%20público-F46800?style=for-the-badge&logo=grafana&logoColor=white)](https://fischerpaez.grafana.net/public-dashboards/5ea12a828dd1478eb54041c8624531d0)
+[![Cockpit](https://img.shields.io/badge/Cockpit-no%20ar-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://telemetria-veicular-grafana.vercel.app)
 [![InfluxDB](https://img.shields.io/badge/InfluxDB-2.7%20·%20Flux-blue?style=for-the-badge&logo=influxdb&logoColor=white)](https://www.influxdata.com)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com)
 [![Dados](https://img.shields.io/badge/Dados-SIMULADOS-critical?style=for-the-badge)](#-aviso-a-telemetria-deste-projeto-é-simulada)
@@ -32,7 +32,7 @@ temporais, dashboards provisionados e visualização autônoma no navegador.
 | Ingestão | InfluxDB Line Protocol, streaming e carga em lote (`src/ingestor.py`) | **Real** |
 | Persistência | InfluxDB 2.7 em contêiner | **Real** |
 | Dashboard local | Grafana 10.4 com consultas Flux ao InfluxDB (`grafana/dashboards/`) | **Real** |
-| Painel público | Grafana Cloud, séries geradas por funções PromQL (`grafana/cloud/`) | **Real, séries sintéticas** |
+| Painel Grafana Cloud | JSON do painel público, séries geradas por funções PromQL (`grafana/cloud/`) | **Versionado, séries sintéticas** |
 | Cockpit web | `index.html` lendo uma volta exportada (`telemetry_data.js`) | **Real** |
 | Geometria | Pontos de referência do traçado; comprimentos e raios estimados | **Aproximada** |
 | Valores dos sensores | Pressão, temperaturas, rotação, G, acelerador, freio | **Simulados** |
