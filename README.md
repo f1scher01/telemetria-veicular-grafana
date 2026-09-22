@@ -129,13 +129,15 @@ flowchart LR
     A --> E["src/export_csv.py<br/>volta de referência"]
     E --> F["index.html<br/>cockpit autônomo"]
     E --> G["src/generate_preview.py<br/>figura analítica"]
-    H["Grafana Cloud<br/>funções PromQL"] -.-> I["painel público"]
+    H["grafana/cloud/<br/>painel PromQL"] -.-> I["Grafana Cloud<br/>(importação opcional)"]
 ```
 
 Três trilhas: a **stack local** (simulador, InfluxDB e Grafana com dashboard Flux provisionado), o
-**cockpit autônomo** em HTML sem infraestrutura, e o **painel público** no Grafana Cloud, que não
-lê o InfluxDB: suas séries são geradas por funções trigonométricas em PromQL, documentadas painel a
-painel em `grafana/cloud/telemetria_publica_promql.json`.
+**cockpit autônomo** em HTML sem infraestrutura (publicado na Vercel), e um **painel para Grafana
+Cloud** versionado em `grafana/cloud/telemetria_publica_promql.json`. Esse painel não lê o InfluxDB:
+suas séries são geradas por funções trigonométricas em PromQL, documentadas painel a painel. O link
+público deixou de ser divulgado porque instâncias gratuitas do Grafana Cloud hibernam e exigem
+interação antes de carregar; o JSON pode ser importado em qualquer instância.
 
 ---
 
